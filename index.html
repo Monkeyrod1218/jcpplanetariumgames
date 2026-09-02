@@ -97,56 +97,18 @@
     padding:56px 0 clamp(180px,32vh,300px);
   }
 
-  .dome{
+  /* ---------- earth ---------- */
+  .earth{
     position:absolute;
     left:50%;
-    bottom:0;
     transform:translateX(-50%);
-    width:min(1500px,175vw);
-    height:clamp(170px,30vh,290px);
-    border-radius:50% 50% 0 0 / 100% 100% 0 0;
-    background:linear-gradient(180deg,var(--dome) 0%,var(--deep) 55%,var(--night) 100%);
-    border-top:1px solid rgba(242,193,78,.42);
+    width:max(2600px,230vw);
+    height:max(2600px,230vw);
+    bottom:calc(clamp(210px,34vh,340px) - max(2600px,230vw));
     z-index:1;
+    pointer-events:none;
+    filter:drop-shadow(0 -6px 40px rgba(90,150,240,.35));
   }
-  .dome::after{
-    content:"";
-    position:absolute;
-    left:50%;
-    top:-1px;
-    transform:translateX(-50%);
-    width:60%;
-    height:1px;
-    background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);
-    opacity:.8;
-  }
-  /* the projector at the dome's crown */
-  .projector{
-    position:absolute;
-    left:50%;
-    bottom:clamp(168px,29.6vh,288px);
-    transform:translateX(-50%);
-    width:16px;
-    height:11px;
-    border-radius:3px 3px 1px 1px;
-    background:linear-gradient(180deg,#5B6798,#2A3566);
-    box-shadow:0 0 14px 2px rgba(242,193,78,.35);
-    z-index:1;
-  }
-  .beam{
-    position:absolute;
-    left:50%;
-    bottom:clamp(176px,30.6vh,296px);
-    transform:translateX(-50%);
-    width:min(760px,90vw);
-    height:min(560px,58vh);
-    clip-path:polygon(48.6% 100%,51.4% 100%,100% 0,0 0);
-    background:linear-gradient(0deg,rgba(242,193,78,.5),rgba(242,193,78,0) 78%);
-    opacity:.16;
-    transition:opacity .7s ease;
-    z-index:1;
-  }
-  body.lit .beam{opacity:.34}
 
   .eyebrow{
     color:var(--muted);
@@ -335,7 +297,6 @@
 
   @media (prefers-reduced-motion:reduce){
     .star{animation:none}
-    .beam{transition:none}
     *{scroll-behavior:auto}
   }
 </style>
@@ -346,9 +307,72 @@
 
 <!-- ===================== HOME ===================== -->
 <section id="home" class="view">
-  <div class="beam" aria-hidden="true"></div>
-  <div class="dome" aria-hidden="true"></div>
-  <div class="projector" aria-hidden="true"></div>
+  <svg class="earth" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="globe"><circle cx="500" cy="500" r="470"/></clipPath>
+
+      <radialGradient id="ocean" cx="40%" cy="32%" r="78%">
+        <stop offset="0%"  stop-color="#4a97d6"/>
+        <stop offset="42%" stop-color="#1f66a9"/>
+        <stop offset="78%" stop-color="#0c3d76"/>
+        <stop offset="100%" stop-color="#05244a"/>
+      </radialGradient>
+
+      <radialGradient id="shade" cx="40%" cy="32%" r="72%">
+        <stop offset="0%"  stop-color="rgba(255,250,235,.28)"/>
+        <stop offset="40%" stop-color="rgba(0,0,0,0)"/>
+        <stop offset="82%" stop-color="rgba(2,8,22,.35)"/>
+        <stop offset="100%" stop-color="rgba(1,4,14,.85)"/>
+      </radialGradient>
+
+      <radialGradient id="rim" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="rgba(150,195,255,0)"/>
+        <stop offset="88%"  stop-color="rgba(150,195,255,0)"/>
+        <stop offset="96%"  stop-color="rgba(170,210,255,.55)"/>
+        <stop offset="100%" stop-color="rgba(120,170,240,0)"/>
+      </radialGradient>
+
+      <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="rgba(120,175,255,0)"/>
+        <stop offset="92%"  stop-color="rgba(120,175,255,0)"/>
+        <stop offset="95.5%" stop-color="rgba(130,185,255,.5)"/>
+        <stop offset="100%" stop-color="rgba(120,175,255,0)"/>
+      </radialGradient>
+
+      <filter id="continents" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.010 0.013" numOctaves="5" seed="24" stitchTiles="stitch" result="noise"/>
+        <feColorMatrix in="noise" type="matrix"
+          values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 12 -5.8" result="landMask"/>
+        <feFlood flood-color="#2f6a35" result="landColor"/>
+        <feComposite in="landColor" in2="landMask" operator="in" result="land"/>
+        <feColorMatrix in="noise" type="matrix"
+          values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 15 -9" result="highMask"/>
+        <feFlood flood-color="#8a7746" result="highColor"/>
+        <feComposite in="highColor" in2="highMask" operator="in" result="high"/>
+        <feMerge>
+          <feMergeNode in="land"/>
+          <feMergeNode in="high"/>
+        </feMerge>
+      </filter>
+
+      <filter id="clouds" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.016 0.022" numOctaves="4" seed="5" stitchTiles="stitch" result="n"/>
+        <feColorMatrix in="n" type="matrix"
+          values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 3 -1.25" result="cmask"/>
+        <feFlood flood-color="#ffffff" result="w"/>
+        <feComposite in="w" in2="cmask" operator="in"/>
+      </filter>
+    </defs>
+
+    <circle cx="500" cy="500" r="500" fill="url(#halo)"/>
+    <g clip-path="url(#globe)">
+      <circle cx="500" cy="500" r="470" fill="url(#ocean)"/>
+      <rect x="0" y="0" width="1000" height="1000" filter="url(#continents)" opacity="0.95"/>
+      <rect x="0" y="0" width="1000" height="1000" filter="url(#clouds)" opacity="0.55"/>
+      <circle cx="500" cy="500" r="470" fill="url(#shade)"/>
+      <circle cx="500" cy="500" r="470" fill="url(#rim)"/>
+    </g>
+  </svg>
 
   <div class="wrap">
     <h1>John Carl Pogue Planetarium</h1>
