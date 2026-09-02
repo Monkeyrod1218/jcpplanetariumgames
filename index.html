@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>John Carl Pogue Planetarium — Games by grade</title>
+<meta name="description" content="Space and astronomy games for students, sorted by grade level.">
+
+<!--
+  ==========================================================================
+  HOW TO ADD A GAME  (this is the only part you need to edit)
+  ==========================================================================
+  Scroll down to the line that says  const GAMES = {
+  Each grade has a list in square brackets. To add a game, put this inside
+  the brackets for that grade:
+
+      { name: "Moon Phase Match", blurb: "Line up the moon with its name.", url: "games/moon-match.html" },
+
+  - name  = what students see on the button
+  - blurb = one short line under it
+  - url   = where the game lives (a file on your site, or a full https:// link)
+
+  Leave a grade's brackets empty ( [] ) and that page politely says the
+  games are still being built. Nothing breaks.
+  ==========================================================================
+-->
+
+<style>
+  :root{
+    --night:#060A1C;
+    --deep:#0C1330;
+    --dome:#141C42;
+    --line:#27325F;
+    --gold:#F2C14E;
+    --gold-soft:#FFE9AE;
+    --text:#E8EDFB;
+    --muted:#93A2CC;
+    --font-display:"Trebuchet MS","Lucida Grande","Lucida Sans Unicode",Tahoma,sans-serif;
+    --font-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{margin:0;padding:0}
+
+  body{
+    background:var(--night);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100svh;
+    overflow-x:hidden;
+  }
+
+  /* ---------- sky ---------- */
+  #sky{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:
+      radial-gradient(120% 80% at 50% 100%, #101A3E 0%, rgba(6,10,28,0) 60%),
+      radial-gradient(90% 60% at 50% -10%, #0D1436 0%, var(--night) 70%);
+  }
+  .star{
+    position:absolute;
+    border-radius:50%;
+    background:#DCE7FF;
+    animation:twinkle 5s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:var(--o)}
+    50%{opacity:calc(var(--o) * 0.25)}
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{
+    position:relative;
+    z-index:2;
+    max-width:960px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+  [hidden]{display:none !important}
+
+  /* ---------- home ---------- */
+  #home{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:56px 0 clamp(180px,32vh,300px);
+  }
+
+  .dome{
+    position:absolute;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:min(1500px,175vw);
+    height:clamp(170px,30vh,290px);
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+    background:linear-gradient(180deg,var(--dome) 0%,var(--deep) 55%,var(--night) 100%);
+    border-top:1px solid rgba(242,193,78,.42);
+    z-index:1;
+  }
+  .dome::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:-1px;
+    transform:translateX(-50%);
+    width:60%;
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold-soft),transparent);
+    opacity:.8;
+  }
+  /* the projector at the dome's crown */
+  .projector{
+    position:absolute;
+    left:50%;
+    bottom:clamp(168px,29.6vh,288px);
+    transform:translateX(-50%);
+    width:16px;
+    height:11px;
+    border-radius:3px 3px 1px 1px;
+    background:linear-gradient(180deg,#5B6798,#2A3566);
+    box-shadow:0 0 14px 2px rgba(242,193,78,.35);
+    z-index:1;
+  }
+  .beam{
+    position:absolute;
+    left:50%;
+    bottom:clamp(176px,30.6vh,296px);
+    transform:translateX(-50%);
+    width:min(760px,90vw);
+    height:min(560px,58vh);
+    clip-path:polygon(48.6% 100%,51.4% 100%,100% 0,0 0);
+    background:linear-gradient(0deg,rgba(242,193,78,.5),rgba(242,193,78,0) 78%);
+    opacity:.16;
+    transition:opacity .7s ease;
+    z-index:1;
+  }
+  body.lit .beam{opacity:.34}
+
+  .eyebrow{
+    color:var(--muted);
+    font-size:.95rem;
+    margin:0 0 14px;
+  }
+  h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(2.1rem,6.6vw,4.1rem);
+    line-height:1.03;
+    letter-spacing:-.015em;
+    margin:0 0 18px;
+    text-shadow:0 0 44px rgba(160,190,255,.28);
+  }
+  .lede{
+    max-width:46ch;
+    margin:0 auto 40px;
+    color:var(--muted);
+    font-size:1.06rem;
+  }
+
+  /* ---------- the dropdown ---------- */
+  .picker{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .field{text-align:left}
+  .field label{
+    display:block;
+    font-size:.9rem;
+    color:var(--gold-soft);
+    margin-bottom:8px;
+    font-family:var(--font-display);
+  }
+  select{
+    appearance:none;
+    -webkit-appearance:none;
+    font-family:var(--font-display);
+    font-size:1.12rem;
+    color:var(--text);
+    background-color:rgba(20,28,66,.9);
+    background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%);
+    background-position:calc(100% - 22px) calc(50% + 2px),calc(100% - 15px) calc(50% + 2px);
+    background-size:7px 7px,7px 7px;
+    background-repeat:no-repeat;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:13px 46px 13px 18px;
+    min-width:232px;
+    cursor:pointer;
+  }
+  select:hover{border-color:#3D4C86}
+  option{background:#0C1330;color:var(--text)}
+
+  .go{
+    font-family:var(--font-display);
+    font-size:1.05rem;
+    font-weight:700;
+    color:#20180A;
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold));
+    border:0;
+    border-radius:10px;
+    padding:14px 26px;
+    cursor:pointer;
+    box-shadow:0 0 26px rgba(242,193,78,.26);
+  }
+  .go:hover{filter:brightness(1.07)}
+  .go:active{transform:translateY(1px)}
+
+  :focus-visible{
+    outline:2px solid var(--gold-soft);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  /* ---------- grade view ---------- */
+  #grade{padding:0 0 80px}
+
+  .topbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px 20px;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 0 20px;
+    border-bottom:1px solid var(--line);
+  }
+  .home-link{
+    font-family:var(--font-display);
+    font-size:1.02rem;
+    color:var(--text);
+    text-decoration:none;
+    border-bottom:1px solid rgba(242,193,78,.5);
+    padding-bottom:2px;
+  }
+  .home-link:hover{border-bottom-color:var(--gold)}
+  .topbar select{
+    min-width:0;
+    font-size:.98rem;
+    padding:9px 40px 9px 14px;
+  }
+
+  .grade-head{padding:52px 0 36px}
+  .badge{
+    display:inline-block;
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--gold);
+    border:1px solid rgba(242,193,78,.45);
+    border-radius:999px;
+    padding:7px 20px;
+    margin:0;
+    letter-spacing:0;
+  }
+  .badge:focus{outline:none}
+  .games{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(255px,1fr));
+    gap:18px;
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .games > li{display:flex}
+  .visually-hidden{
+    position:absolute;
+    width:1px;height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+  }
+  .game{
+    display:block;
+    width:100%;
+    background:rgba(20,28,66,.6);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:22px 22px 24px;
+    text-decoration:none;
+    color:var(--text);
+    height:100%;
+  }
+  .game:hover{border-color:var(--gold);background:rgba(26,36,80,.75)}
+  .game-name{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.2rem;
+    margin:0 0 7px;
+  }
+  .game-blurb{margin:0;color:var(--muted);font-size:.96rem}
+
+  .empty{
+    border:1px dashed var(--line);
+    border-radius:12px;
+    padding:40px 30px;
+    max-width:52ch;
+  }
+  .empty p{margin:0 0 8px;color:var(--muted)}
+  .empty p:first-child{
+    color:var(--text);
+    font-family:var(--font-display);
+    font-size:1.22rem;
+    margin-bottom:12px;
+  }
+
+  @media (max-width:520px){
+    .picker{flex-direction:column;align-items:stretch}
+    .field label{text-align:center}
+    select{width:100%}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .star{animation:none}
+    .beam{transition:none}
+    *{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="sky" aria-hidden="true"></div>
+
+<!-- ===================== HOME ===================== -->
+<section id="home" class="view">
+  <div class="beam" aria-hidden="true"></div>
+  <div class="dome" aria-hidden="true"></div>
+  <div class="projector" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <p class="eyebrow">John Carl Pogue Planetarium</p>
+    <h1>Games under the dome</h1>
+    <p class="lede">Pick your grade to find games about the moon, the planets, the seasons, and everything else we look at in the dome.</p>
+
+    <div class="picker">
+      <div class="field">
+        <label for="gradePick">Pick a grade</label>
+        <select id="gradePick">
+          <option value="">Choose a grade level…</option>
+        </select>
+      </div>
+      <button class="go" id="goBtn" type="button">Open games</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ONE GRADE ===================== -->
+<section id="grade" class="view" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="home-link" href="#">← All grade levels</a>
+      <label class="visually-hidden" for="gradeSwitch">Switch grade</label>
+      <select id="gradeSwitch"></select>
+    </div>
+
+    <div class="grade-head">
+      <h2 class="badge" id="gradeBadge" tabindex="-1"></h2>
+    </div>
+
+    <ul class="games" id="gameList"></ul>
+  </div>
+</section>
+
+<script>
+(function () {
+  "use strict";
+
+  /* The ten grade levels, in menu order. */
+  var GRADES = [
+    { id:"k",  short:"K",         name:"Kindergarten" },
+    { id:"1",  short:"Grade 1",   name:"Grade 1" },
+    { id:"2",  short:"Grade 2",   name:"Grade 2" },
+    { id:"3",  short:"Grade 3",   name:"Grade 3" },
+    { id:"4",  short:"Grade 4",   name:"Grade 4" },
+    { id:"5",  short:"Grade 5",   name:"Grade 5" },
+    { id:"6",  short:"Grade 6",   name:"Grade 6" },
+    { id:"7",  short:"Grade 7",   name:"Grade 7" },
+    { id:"8",  short:"Grade 8",   name:"Grade 8" },
+    { id:"hs", short:"High school", name:"High school" }
+  ];
+
+  /* ---- ADD YOUR GAMES HERE (see the note at the top of this file) ---- */
+  var GAMES = {
+    k:  [],
+    "1":[],
+    "2":[],
+    "3":[],
+    "4":[],
+    "5":[],
+    "6":[],
+    "7":[],
+    "8":[],
+    hs: []
+  };
+  /* ------------------------------------------------------------------- */
+
+  var byId = function (id) { return document.getElementById(id); };
+  var homeView   = byId("home");
+  var gradeView  = byId("grade");
+  var pick       = byId("gradePick");
+  var switcher   = byId("gradeSwitch");
+  var goBtn      = byId("goBtn");
+  var badge      = byId("gradeBadge");
+  var gameList   = byId("gameList");
+  var BASE_TITLE = "John Carl Pogue Planetarium";
+
+  /* ---------- stars ---------- */
+  function drawStars() {
+    var sky = byId("sky");
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < 130; i++) {
+      var s = document.createElement("div");
+      var size = (Math.random() * 1.7 + 0.9).toFixed(2);
+      var o = (Math.random() * 0.7 + 0.3).toFixed(2);
+      s.className = "star";
+      s.style.width = size + "px";
+      s.style.height = size + "px";
+      s.style.left = (Math.random() * 100).toFixed(2) + "%";
+      s.style.top = (Math.random() * 76).toFixed(2) + "%";
+      s.style.setProperty("--o", o);
+      s.style.opacity = o;
+      s.style.animationDuration = (Math.random() * 4 + 3).toFixed(1) + "s";
+      s.style.animationDelay = (Math.random() * 7).toFixed(1) + "s";
+      frag.appendChild(s);
+    }
+    sky.appendChild(frag);
+  }
+
+  /* ---------- menus ---------- */
+  function fillMenus() {
+    GRADES.forEach(function (g) {
+      var a = document.createElement("option");
+      a.value = g.id;
+      a.textContent = g.name;
+      pick.appendChild(a);
+
+      var b = document.createElement("option");
+      b.value = g.id;
+      b.textContent = g.name;
+      switcher.appendChild(b);
+    });
+  }
+
+  function findGrade(id) {
+    for (var i = 0; i < GRADES.length; i++) {
+      if (GRADES[i].id === id) return GRADES[i];
+    }
+    return null;
+  }
+
+  /* ---------- games ---------- */
+  function renderGames(grade) {
+    gameList.innerHTML = "";
+    var list = GAMES[grade.id] || [];
+
+    if (!list.length) {
+      var li = document.createElement("li");
+      li.className = "empty";
+      li.innerHTML =
+        "<p>No games here yet.</p>" +
+        "<p>Games for " + grade.name + " are still being built. " +
+        "Try another grade from the menu above, or check back soon.</p>";
+      gameList.appendChild(li);
+      return;
+    }
+
+    list.forEach(function (game) {
+      var li = document.createElement("li");
+      var a = document.createElement("a");
+      a.className = "game";
+      a.href = game.url || "#";
+      var n = document.createElement("p");
+      n.className = "game-name";
+      n.textContent = game.name;
+      a.appendChild(n);
+      if (game.blurb) {
+        var b = document.createElement("p");
+        b.className = "game-blurb";
+        b.textContent = game.blurb;
+        a.appendChild(b);
+      }
+      li.appendChild(a);
+      gameList.appendChild(li);
+    });
+  }
+
+  /* ---------- routing ---------- */
+  function currentId() {
+    return (location.hash || "").replace(/^#\/?/, "").toLowerCase();
+  }
+
+  function render(focusHeading) {
+    var grade = findGrade(currentId());
+
+    if (!grade) {
+      gradeView.hidden = true;
+      homeView.hidden = false;
+      document.body.classList.remove("lit");
+      document.title = BASE_TITLE + " — Games by grade";
+      return;
+    }
+
+    homeView.hidden = true;
+    gradeView.hidden = false;
+    badge.textContent = grade.short;
+    switcher.value = grade.id;
+    renderGames(grade);
+    document.title = grade.name + " games — " + BASE_TITLE;
+    if (focusHeading) {
+      badge.focus();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function open(id) {
+    if (!findGrade(id)) return;
+    if (currentId() === id) { render(true); return; }
+    location.hash = id;
+  }
+
+  /* ---------- wiring ---------- */
+  drawStars();
+  fillMenus();
+
+  pick.addEventListener("change", function () {
+    document.body.classList.toggle("lit", !!pick.value);
+  });
+
+  goBtn.addEventListener("click", function () {
+    if (!pick.value) { pick.focus(); return; }
+    open(pick.value);
+  });
+
+  switcher.addEventListener("change", function () {
+    open(switcher.value);
+  });
+
+  window.addEventListener("hashchange", function () { render(true); });
+
+  render(false);
+
+  /* exposed so the test harness can drive the same code the page uses */
+  window.__planetarium = { open: open, render: render, GRADES: GRADES, GAMES: GAMES };
+})();
+</script>
+</body>
+</html>
