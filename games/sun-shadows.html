@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sun &amp; Shadows — Earth's Rotation</title>
+<style>
+  :root{
+    --ink:#0B1230;--panel:#16204A;--panel2:#1D2A5C;--line:#31407A;
+    --text:#EAF0FF;--dim:#A5B3DC;--sun:#FFC24B;--sun-soft:#FFE9AE;
+    --good:#57D3A2;--think:#FFD37A;--radius:16px;
+    --display:"Trebuchet MS","Lucida Grande",Tahoma,sans-serif;
+    --body:Verdana,Geneva,"DejaVu Sans",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.7}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:22px 20px 70px}
+
+  h1{font-family:var(--display);font-size:clamp(24px,5vw,34px);line-height:1.08;letter-spacing:-.5px;margin:0 0 8px;font-weight:700;text-align:center}
+  h2{font-family:var(--display);font-size:19px;margin:0 0 2px}
+  .lead{color:var(--dim);text-align:center;margin:0 auto 4px;max-width:46ch;font-size:14px}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px}
+  .panel svg{display:block;width:100%;height:auto;border-radius:12px}
+
+  .result{font-size:14.5px;line-height:1.5;margin-top:12px;min-height:2.6em}
+  .result b{color:var(--think)}
+
+  .sliderrow{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .sliderrow .cap{font-size:12px;color:var(--dim);white-space:nowrap}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:40px;background:transparent;margin:0;touch-action:pan-y}
+  input[type=range]::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,#3B4C8E,#6C7FD4)}
+  input[type=range]::-moz-range-track{height:12px;border-radius:999px;background:linear-gradient(90deg,#3B4C8E,#6C7FD4)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:34px;height:34px;border-radius:50%;background:var(--sun);border:3px solid #12193C;margin-top:-11px;box-shadow:0 0 0 3px rgba(255,194,75,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:var(--sun);border:3px solid #12193C;cursor:pointer}
+
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  button{font-family:var(--body);font-size:14px;color:var(--text);background:#243468;border:1px solid var(--line);
+    border-radius:12px;padding:0 16px;min-height:46px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,194,75,.22)}
+  button:hover{background:#2E3F7C}
+  button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--think);outline-offset:2px}
+  button.key{background:var(--sun);color:#231602;border-color:#E0A62F;font-weight:bold}
+  button.key:hover{background:#FFD068}
+
+  .rule{margin-top:16px;border:1px solid rgba(255,211,122,.5);background:rgba(255,211,122,.09);border-radius:var(--radius);padding:14px 16px;font-size:14.5px;text-align:center}
+  .rule b{color:var(--think)}
+
+  .quizhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:2px}
+  .score{font-size:13px;color:var(--dim)}
+  .stars-row{letter-spacing:3px;font-size:17px}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:12px}
+  .qnum{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);
+    font-family:var(--display);font-weight:700;font-size:14px;margin-right:9px;flex:none}
+  .qtop{display:flex;align-items:flex-start}
+  .qtext{font-size:15px;line-height:1.5}
+  .opts{display:grid;gap:8px;margin-top:12px}
+  .opt{text-align:left;display:flex;gap:10px;align-items:flex-start;width:100%;padding:11px 13px;font-size:14px;line-height:1.45;background:var(--panel2);border-radius:12px}
+  .opt .ltr{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;background:#111C44}
+  .opt:disabled{cursor:default;opacity:1}
+  .opt.right{background:rgba(87,211,162,.16);border-color:var(--good)}
+  .opt.right .ltr{background:var(--good);color:#08321F;border-color:var(--good)}
+  .opt.wrong{background:rgba(255,106,77,.12);border-color:rgba(255,106,77,.6)}
+  .opt.wrong .txt{text-decoration:line-through;color:var(--dim)}
+  .fb{margin-top:11px;padding:12px 14px;border-radius:12px;font-size:13.5px;line-height:1.55;border:1px solid var(--line);background:#111B42}
+  .fb.right{border-color:rgba(87,211,162,.5);background:rgba(87,211,162,.10)}
+  .fb.rethink{border-color:rgba(255,211,122,.5);background:rgba(255,211,122,.09)}
+  .fb b{font-family:var(--display);font-size:14.5px}
+  .finale{margin-top:16px;border-radius:var(--radius);padding:20px;border:1px solid var(--sun);background:linear-gradient(160deg,#20305F,#161F45);display:none}
+  .finale.show{display:block}
+  .finale h2{color:var(--sun)}
+
+  details{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:13px;color:var(--dim)}
+  summary{cursor:pointer;color:var(--text);font-family:var(--display);font-size:15px}
+  details b{color:var(--text)}
+  .sec{margin-top:24px}
+
+  .backbar{margin-bottom:14px}
+  .backlink{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-size:14px;font-weight:bold;
+    color:var(--text);text-decoration:none;background:#243468;border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-height:44px}
+  .backlink:hover{background:#2E3F7C;border-color:var(--sun)}
+
+  .es{display:block;font-style:italic;font-weight:normal;font-size:.82em;line-height:1.35;color:var(--dim);margin-top:2px}
+  h1 .es{font-size:.5em;color:var(--think);margin-top:6px}
+  .btns button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.18;min-height:52px;padding-top:8px;padding-bottom:8px}
+  .btns button .es{font-size:.8em}
+  .backlink .es{width:100%;text-align:left;font-size:.8em;margin-top:1px}
+  .cap .es{font-size:.9em;white-space:normal}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<svg class="stars" id="starfield" aria-hidden="true"></svg>
+
+<div class="wrap">
+
+  <div class="backbar">
+    <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
+  </div>
+
+  <h1>Sun &amp; Shadows<span class="es">(El Sol y las sombras)</span></h1>
+  <p class="lead">Move the Sun across the sky and watch the shadow change.<span class="es">(Mueve el Sol por el cielo y observa cómo cambia la sombra.)</span></p>
+
+  <!-- ===== shadow scene ===== -->
+  <div class="panel">
+    <svg id="scene" viewBox="0 0 420 300" role="img" aria-label="A tree on the ground with the Sun in the sky, casting a shadow">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop id="skyTop" offset="0%" stop-color="#7FB6E8"/>
+          <stop id="skyBot" offset="100%" stop-color="#CFE4F6"/>
+        </linearGradient>
+        <radialGradient id="sunG" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#FFF6D8"/><stop offset="60%" stop-color="#FFD35F"/><stop offset="100%" stop-color="#FFB01F"/>
+        </radialGradient>
+        <radialGradient id="sunGlow2" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#FFD35F" stop-opacity=".5"/><stop offset="100%" stop-color="#FFD35F" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="420" height="252" fill="url(#sky)"/>
+      <!-- Sun path guide -->
+      <path d="M60 252 A210 210 0 0 1 360 252" fill="none" stroke="#FFFFFF" stroke-opacity=".28" stroke-width="2" stroke-dasharray="3 8"/>
+      <!-- Sun -->
+      <circle id="sunGlow" cx="60" cy="252" r="46" fill="url(#sunGlow2)"/>
+      <circle id="sun" cx="60" cy="252" r="19" fill="url(#sunG)"/>
+      <!-- ground -->
+      <rect x="0" y="250" width="420" height="50" fill="#2F5734"/>
+      <rect x="0" y="250" width="420" height="4" fill="#3C6B44"/>
+      <!-- shadow (under the tree) -->
+      <polygon id="shadow" points="210,250 210,250 210,250" fill="#0A1508" fill-opacity=".55"/>
+      <!-- tree -->
+      <rect x="205" y="212" width="10" height="40" rx="3" fill="#7A5230"/>
+      <circle cx="210" cy="206" r="26" fill="#4FA35E"/>
+      <circle cx="197" cy="212" r="16" fill="#5FB06D"/>
+      <circle cx="224" cy="210" r="15" fill="#5FB06D"/>
+      <!-- compass labels -->
+      <text x="16" y="272" font-size="12" fill="#DCEBDD" font-family="Verdana,sans-serif">&#8592; east</text>
+      <text x="27" y="284" font-size="9" font-style="italic" fill="#BFD3C1" font-family="Verdana,sans-serif">(este)</text>
+      <text x="404" y="272" text-anchor="end" font-size="12" fill="#DCEBDD" font-family="Verdana,sans-serif">west &#8594;</text>
+      <text x="393" y="284" text-anchor="end" font-size="9" font-style="italic" fill="#BFD3C1" font-family="Verdana,sans-serif">(oeste)</text>
+    </svg>
+
+    <div class="result" id="result"></div>
+
+    <div class="sliderrow">
+      <span class="cap">Morning<span class="es">(Mañana)</span></span>
+      <input id="timeSlider" type="range" min="0" max="100" step="1" value="12" aria-label="Time of day from morning to evening">
+      <span class="cap">Evening<span class="es">(Tarde)</span></span>
+    </div>
+    <div class="btns"><button id="btnPlay" class="key">Play the day<span class="es">(Reproduce el día)</span></button></div>
+  </div>
+
+  <div class="rule">
+    <b>As Earth spins, the Sun seems to cross the sky from east to west.</b> That gives us day and night — and shadows that change all day.
+    <span class="es">(Al girar la Tierra, el Sol parece cruzar el cielo de este a oeste. Eso nos da el día y la noche, y sombras que cambian todo el día.)</span>
+  </div>
+
+  <!-- ===== quiz ===== -->
+  <div class="sec">
+    <div class="quizhead">
+      <h2>Now answer<span class="es">(Ahora responde)</span></h2>
+      <div class="score"><div class="stars-row" id="starsRow">☆☆☆</div><span id="scoreText"></span></div>
+    </div>
+    <div id="quiz"></div>
+
+    <div class="finale" id="finale">
+      <h2 id="finaleTitle"></h2>
+      <p id="finaleText"></p>
+      <div class="btns"><button id="btnAgain">Play again<span class="es">(Jugar otra vez)</span></button></div>
+    </div>
+  </div>
+
+  <details>
+    <summary>For teachers and families</summary>
+    <p><b>The big idea:</b> Earth rotates on its axis about once every 24 hours. That daily spin makes the Sun appear to move across the sky from east to west, which gives us day and night and makes shadows change length and direction through the day (answer D).</p>
+    <p><b>The distractors target common misconceptions:</b> a full moon each month comes from the Moon's orbit (~29.5 days), not Earth's spin; the Sun appears to move east to west (not west to east), and it is really Earth turning; ocean tides are caused by the Moon's (and Sun's) gravity and occur day and night, not by rotation.</p>
+    <p><b>One simplification:</b> the shadow model shows the Sun rising due east and setting due west with a symmetric arc, which is closest to true near the equinoxes.</p>
+  </details>
+
+</div>
+
+<script>
+"use strict";
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function setBi(el, en, es){
+    el.textContent = "";
+    el.appendChild(document.createTextNode(en));
+    if (es){ var s = document.createElement("span"); s.className = "es"; s.textContent = "(" + es + ")"; el.appendChild(s); }
+  }
+  function mixHex(a, b, amt){
+    var t = Math.max(0, Math.min(1, amt));
+    var pa = [parseInt(a.slice(1,3),16), parseInt(a.slice(3,5),16), parseInt(a.slice(5,7),16)];
+    var pb = [parseInt(b.slice(1,3),16), parseInt(b.slice(3,5),16), parseInt(b.slice(5,7),16)];
+    var o = "#";
+    for (var i = 0; i < 3; i++){ var v = Math.round(pa[i] + (pb[i]-pa[i])*t).toString(16); o += v.length<2?"0"+v:v; }
+    return o;
+  }
+
+  /* stars */
+  (function(){
+    var seed = 7, out = "";
+    function rnd(){ seed = (seed*1103515245+12345)%2147483648; return seed/2147483648; }
+    for (var i=0;i<80;i++) out += '<circle cx="'+(rnd()*100).toFixed(2)+'%" cy="'+(rnd()*100).toFixed(2)+'%" r="'+(rnd()*1.3+0.4).toFixed(2)+'" fill="#CFE0FF" opacity="'+(rnd()*0.5+0.15).toFixed(2)+'"/>';
+    $("starfield").innerHTML = out;
+  })();
+
+  /* ---- shadow scene ---- */
+  var GROUND = 250, TREE_X = 210, ARC = 200, SUN_X0 = 60, SUN_X1 = 360;
+  function renderScene(t){          // t: 0 = morning, 1 = evening
+    var sunX = SUN_X0 + t * (SUN_X1 - SUN_X0);
+    var sunY = GROUND - Math.sin(t * Math.PI) * ARC;
+    $("sun").setAttribute("cx", sunX.toFixed(1)); $("sun").setAttribute("cy", sunY.toFixed(1));
+    $("sunGlow").setAttribute("cx", sunX.toFixed(1)); $("sunGlow").setAttribute("cy", sunY.toFixed(1));
+
+    // shadow points away from the Sun; longer when the Sun is low
+    var dir = sunX <= TREE_X ? 1 : -1;                       // sun on left -> shadow to the right
+    var len = 24 + 150 * (1 - Math.sin(t * Math.PI));        // long at ends, short at noon
+    var tipX = TREE_X + dir * len;
+    $("shadow").setAttribute("points",
+      (TREE_X - 9) + "," + GROUND + " " + (TREE_X + 9) + "," + GROUND + " " + tipX.toFixed(1) + "," + (GROUND + 6));
+
+    // warm the sky near sunrise/sunset
+    var warm = Math.abs(t - 0.5) * 2;                        // 0 at noon, 1 at ends
+    $("skyTop").setAttribute("stop-color", mixHex("#7FB6E8", "#6E77A8", warm));
+    $("skyBot").setAttribute("stop-color", mixHex("#CFE4F6", "#F0B27A", warm));
+
+    var r = $("result");
+    if (t < 0.32) setBi(r, "Morning: the Sun is low in the east, so the shadow is long and points west.", "Mañana: el Sol está bajo en el este, así que la sombra es larga y apunta al oeste.");
+    else if (t > 0.68) setBi(r, "Evening: the Sun is low in the west, so the shadow is long and points east.", "Tarde: el Sol está bajo en el oeste, así que la sombra es larga y apunta al este.");
+    else if (t > 0.42 && t < 0.58) setBi(r, "Midday: the Sun is high, so the shadow is short.", "Mediodía: el Sol está alto, así que la sombra es corta.");
+    else setBi(r, "The Sun is moving across the sky and the shadow is changing.", "El Sol se mueve por el cielo y la sombra va cambiando.");
+  }
+
+  var playing = false, rafId = null;
+  function stopPlay(){ playing = false; if (rafId){ cancelAnimationFrame(rafId); rafId = null; } setBi($("btnPlay"), "Play the day", "Reproduce el día"); }
+  $("timeSlider").addEventListener("input", function(e){ stopPlay(); renderScene(parseFloat(e.target.value)/100); });
+  $("btnPlay").addEventListener("click", function(){
+    if (playing){ stopPlay(); return; }
+    if (reduceMotion){ $("timeSlider").value = "50"; renderScene(0.5); return; }
+    if (parseFloat($("timeSlider").value) >= 99) $("timeSlider").value = "0";
+    playing = true; setBi($("btnPlay"), "Pause", "Pausa");
+    var start = parseFloat($("timeSlider").value) / 100, t0 = null;
+    function frame(ts){
+      if (!playing) return;
+      if (!t0) t0 = ts;
+      var t = Math.min(1, start + (ts - t0) / 5000);
+      $("timeSlider").value = String(Math.round(t * 100));
+      renderScene(t);
+      if (t < 1) rafId = requestAnimationFrame(frame); else stopPlay();
+    }
+    rafId = requestAnimationFrame(frame);
+  });
+
+  /* ---- quiz ---- */
+  var QUESTIONS = [
+    {
+      text: "Which sentence describes a result of the rotation of the Earth on its axis?",
+      es: "¿Qué oración describe un resultado de la rotación de la Tierra sobre su eje?",
+      options: [
+        { text: "A full moon occurs once a month.", es: "La luna llena ocurre una vez al mes.", ok: false,
+          fb: "A full moon comes from the Moon traveling around Earth, which takes about a month. That is the Moon's motion, not Earth's daily spin.",
+          fbEs: "La luna llena viene de que la Luna viaja alrededor de la Tierra, lo que tarda alrededor de un mes. Ese es el movimiento de la Luna, no el giro diario de la Tierra." },
+        { text: "The sun moves from west to east.", es: "El Sol se mueve de oeste a este.", ok: false,
+          fb: "The Sun appears to move the OTHER way — from east to west — because Earth spins toward the east. And the Sun isn't really moving; Earth is turning.",
+          fbEs: "El Sol parece moverse al REVÉS: de este a oeste, porque la Tierra gira hacia el este. Y el Sol no se mueve de verdad; es la Tierra la que gira." },
+        { text: "Ocean tides reach high tide during the night.", es: "Las mareas del océano suben durante la noche.", ok: false,
+          fb: "Tides are pulled by the Moon's gravity, not by Earth's spin, and high tides happen in the day and the night. So this isn't a result of rotation.",
+          fbEs: "Las mareas las jala la gravedad de la Luna, no el giro de la Tierra, y las mareas altas ocurren de día y de noche. Así que esto no es un resultado de la rotación." },
+        { text: "The length of a shadow changes during the day.", es: "La longitud de una sombra cambia durante el día.", ok: true,
+          fb: "Yes! As Earth spins, the Sun appears to move across the sky, so a shadow gets long, then short, then long again — and changes direction. You saw it above.",
+          fbEs: "¡Sí! Al girar la Tierra, el Sol parece moverse por el cielo, así que una sombra se hace larga, luego corta y luego larga otra vez, y cambia de dirección. Lo viste arriba." }
+      ]
+    },
+    {
+      text: "The Sun looks like it moves across the sky each day. What is really moving?",
+      es: "El Sol parece moverse por el cielo cada día. ¿Qué se mueve en realidad?",
+      options: [
+        { text: "The Earth is spinning.", es: "La Tierra está girando.", ok: true,
+          fb: "Right. Earth spins once a day. The Sun stays put — we just turn past it, so it looks like the Sun crosses the sky.",
+          fbEs: "Correcto. La Tierra gira una vez al día. El Sol se queda quieto; nosotros giramos frente a él, así que parece que el Sol cruza el cielo." },
+        { text: "The Sun is flying around the Earth.", es: "El Sol vuela alrededor de la Tierra.", ok: false,
+          fb: "The Sun stays in place. It only looks like it moves because Earth is spinning.",
+          fbEs: "El Sol se queda en su lugar. Solo parece que se mueve porque la Tierra gira." },
+        { text: "The Moon is pushing the Sun.", es: "La Luna empuja al Sol.", ok: false,
+          fb: "The Moon doesn't push the Sun. The Sun seems to move because Earth turns on its axis.",
+          fbEs: "La Luna no empuja al Sol. El Sol parece moverse porque la Tierra gira sobre su eje." }
+      ]
+    },
+    {
+      text: "Which of these happens because the Earth rotates (spins)?",
+      es: "¿Cuál de estas cosas ocurre porque la Tierra rota (gira)?",
+      options: [
+        { text: "Day changes to night and back again.", es: "El día cambia a noche y de vuelta.", ok: true,
+          fb: "Yes. One spin takes about 24 hours, giving us day and night — and shadows that move all day.",
+          fbEs: "Sí. Un giro tarda unas 24 horas, dándonos el día y la noche, y sombras que se mueven todo el día." },
+        { text: "The Moon shows a full moon each month.", es: "La Luna muestra luna llena cada mes.", ok: false,
+          fb: "That's the Moon going around Earth (about a month), not Earth's daily spin.",
+          fbEs: "Eso es la Luna dando la vuelta a la Tierra (alrededor de un mes), no el giro diario de la Tierra." },
+        { text: "The ocean has tides.", es: "El océano tiene mareas.", ok: false,
+          fb: "Tides are caused by the Moon's gravity pulling the water, not by Earth spinning.",
+          fbEs: "Las mareas las causa la gravedad de la Luna que jala el agua, no el giro de la Tierra." }
+      ]
+    }
+  ];
+
+  var LETTERS = ["A", "B", "C", "D"];
+  var firstTry = new Array(QUESTIONS.length).fill(null);
+
+  function buildQuiz(){
+    var box = $("quiz"); box.innerHTML = "";
+    firstTry = new Array(QUESTIONS.length).fill(null);
+    $("finale").className = "finale";
+    QUESTIONS.forEach(function(q, qi){
+      var card = document.createElement("div"); card.className = "q";
+      var top = document.createElement("div"); top.className = "qtop";
+      var num = document.createElement("span"); num.className = "qnum"; num.textContent = String(qi + 1);
+      var qt = document.createElement("div"); qt.className = "qtext"; setBi(qt, q.text, q.es);
+      top.appendChild(num); top.appendChild(qt); card.appendChild(top);
+      var opts = document.createElement("div"); opts.className = "opts";
+      q.options.forEach(function(opt, oi){
+        var b = document.createElement("button"); b.className = "opt";
+        b.innerHTML = '<span class="ltr">' + LETTERS[oi] + '</span><span class="txt"></span>';
+        setBi(b.querySelector(".txt"), opt.text, opt.es);
+        b.addEventListener("click", function(){ answer(qi, oi, card, b); });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+      var fb = document.createElement("div"); fb.className = "fb"; fb.style.display = "none"; card.appendChild(fb);
+      box.appendChild(card);
+    });
+    updateScore();
+  }
+
+  function answer(qi, oi, card, btn){
+    var opt = QUESTIONS[qi].options[oi];
+    if (btn.disabled) return;
+    if (firstTry[qi] === null) firstTry[qi] = opt.ok;
+    var fb = card.querySelector(".fb"); fb.style.display = "block"; fb.innerHTML = "";
+    var head = document.createElement("b"), body = document.createElement("span");
+    if (opt.ok){
+      btn.className = "opt right";
+      var all = card.querySelectorAll(".opt");
+      for (var i = 0; i < all.length; i++) all[i].disabled = true;
+      fb.className = "fb right";
+      if (firstTry[qi]) setBi(head, "Correct! ", "¡Correcto!");
+      else setBi(head, "Yes, that's the one. ", "Sí, esa es.");
+    } else {
+      btn.className = "opt wrong"; btn.disabled = true; fb.className = "fb rethink";
+      setBi(head, "Not that one. ", "Esa no.");
+    }
+    setBi(body, opt.fb, opt.fbEs);
+    fb.appendChild(head); fb.appendChild(body);
+    if (!opt.ok){
+      var tail = document.createElement("div"); tail.style.marginTop = "8px";
+      setBi(tail, "Try again.", "Intenta otra vez.");
+      fb.appendChild(tail);
+    }
+    updateScore();
+  }
+
+  function updateScore(){
+    var right = firstTry.filter(function(v){ return v === true; }).length;
+    var row = "";
+    for (var i = 0; i < QUESTIONS.length; i++) row += firstTry[i] === true ? "★" : "☆";
+    $("starsRow").textContent = row;
+    setBi($("scoreText"), right + " of " + QUESTIONS.length + " right", right + " de " + QUESTIONS.length + " correctas");
+    var solved = 0, cards = $("quiz").querySelectorAll(".q");
+    for (var c = 0; c < cards.length; c++) if (cards[c].querySelector(".opt.right")) solved++;
+    if (solved === QUESTIONS.length){
+      $("finale").className = "finale show";
+      setBi($("finaleTitle"), "You got it: Rotation Detective!", "¡Lo lograste: Detective de la Rotación!");
+      setBi($("finaleText"),
+        "Earth's daily spin makes the Sun appear to cross the sky from east to west. That gives us day and night, and shadows that change all day — like the one you moved.",
+        "El giro diario de la Tierra hace que el Sol parezca cruzar el cielo de este a oeste. Eso nos da el día y la noche, y sombras que cambian todo el día, como la que moviste.");
+    }
+  }
+
+  $("btnAgain").addEventListener("click", function(){ buildQuiz(); $("quiz").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); });
+
+  /* start */
+  renderScene(0.12);
+  buildQuiz();
+})();
+</script>
+</body>
+</html>
