@@ -239,6 +239,23 @@
   .backlink:hover{background:#2E3F7C;border-color:var(--sun)}
   .backlink:focus-visible{outline:3px solid var(--think);outline-offset:2px}
 
+  /* ---------- Spanish translations (smaller, italic, in parentheses) ---------- */
+  .es{
+    display:block;font-style:italic;font-weight:normal;
+    font-size:.82em;line-height:1.35;color:var(--dim);margin-top:2px;
+  }
+  h1 .es{font-size:.46em;color:var(--think);margin-top:8px}
+  .rd .val .es{font-size:.62em;margin-top:3px}
+  .btns button{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:1px;line-height:1.18;min-height:52px;padding-top:8px;padding-bottom:8px;
+  }
+  .btns button .es{font-size:.8em}
+  .backlink{flex-wrap:wrap}
+  .backlink .es{width:100%;text-align:left;font-size:.8em;margin-top:1px}
+  .cap .es{font-size:.9em;white-space:normal}
+  .act button .es{font-size:.85em}
+
   /* Phones and narrow portrait windows: stack everything. */
   @media (max-width:760px) and (orientation:portrait){
     .stage{grid-template-columns:1fr}
@@ -279,16 +296,16 @@
 <div class="wrap">
 
   <div class="backbar">
-    <a class="backlink" href="../index.html#3">&#8592; Back to games</a>
+    <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
   </div>
 
   <div class="hero">
-    <h1>Spin the Earth.</h1>
+    <h1>Spin the Earth.<span class="es">(Gira la Tierra.)</span></h1>
     <ol class="steps">
-      <li><span class="n">1</span><span>Two pictures. Earth from space, and the sky over Austin.</span></li>
-      <li><span class="n">2</span><span>It is 4:00 P.M. Press the yellow <b>Jump 12 hours</b> button.</span></li>
-      <li><span class="n">3</span><span>Read the three boxes under the pictures.</span></li>
-      <li><span class="n">4</span><span>Then answer the question at the bottom.</span></li>
+      <li><span class="n">1</span><span>Two pictures. Earth from space, and the sky over Austin.<span class="es">(Dos imágenes: la Tierra desde el espacio y el cielo sobre Austin.)</span></span></li>
+      <li><span class="n">2</span><span>It is 4:00 P.M. Press the yellow <b>Jump 12 hours</b> button.<span class="es">(Son las 4:00 p. m. Presiona el botón amarillo Salta 12 horas.)</span></span></li>
+      <li><span class="n">3</span><span>Read the three boxes under the pictures.<span class="es">(Lee las tres casillas debajo de las imágenes.)</span></span></li>
+      <li><span class="n">4</span><span>Then answer the question at the bottom.<span class="es">(Luego responde la pregunta de abajo.)</span></span></li>
     </ol>
   </div>
 
@@ -320,6 +337,7 @@
         <g id="sunRays" stroke="#FFC24B" stroke-width="2" stroke-linecap="round" opacity=".55"></g>
         <circle cx="52" cy="160" r="40" fill="url(#sunGrad)"/>
         <text x="52" y="228" text-anchor="middle" font-size="12" fill="#FFD98A" font-family="Verdana,sans-serif">Sun</text>
+        <text x="52" y="241" text-anchor="middle" font-size="10" font-style="italic" fill="#E7B978" font-family="Verdana,sans-serif">(Sol)</text>
 
         <!-- light travelling toward Earth -->
         <g stroke="#FFC24B" stroke-width="1.4" opacity=".35" stroke-dasharray="5 7">
@@ -359,12 +377,16 @@
                 font-family="Verdana,sans-serif">Austin</text>
         </g>
 
-        <text x="215" y="286" font-size="11.5" fill="#FFD98A" font-family="Verdana,sans-serif" text-anchor="middle">day side</text>
-        <text x="330" y="286" font-size="11.5" fill="#95A6DC" font-family="Verdana,sans-serif" text-anchor="middle">night side</text>
+        <text x="215" y="284" font-size="11.5" fill="#FFD98A" font-family="Verdana,sans-serif" text-anchor="middle">day side</text>
+        <text x="215" y="295" font-size="9.5" font-style="italic" fill="#E7C58F" font-family="Verdana,sans-serif" text-anchor="middle">(lado de día)</text>
+        <text x="330" y="284" font-size="11.5" fill="#95A6DC" font-family="Verdana,sans-serif" text-anchor="middle">night side</text>
+        <text x="330" y="295" font-size="9.5" font-style="italic" fill="#8E9FD0" font-family="Verdana,sans-serif" text-anchor="middle">(lado de noche)</text>
         <g id="spaceCaptions">
-          <rect x="10" y="8" width="234" height="24" rx="12" fill="#0A1231" fill-opacity=".7" stroke="#3A4A85"/>
+          <rect x="10" y="8" width="258" height="40" rx="12" fill="#0A1231" fill-opacity=".7" stroke="#3A4A85"/>
           <text x="22" y="24.5" font-size="11.5" fill="#DCE6FF" font-family="Verdana,sans-serif">Space view — above the North Pole</text>
-          <text x="14" y="310" font-size="11.5" fill="#A9B8E4" font-family="Verdana,sans-serif">Drag the Earth to spin it, or use the controls.</text>
+          <text x="22" y="39" font-size="9.5" font-style="italic" fill="#AEBAE4" font-family="Verdana,sans-serif">(Vista del espacio, sobre el Polo Norte)</text>
+          <text x="14" y="303" font-size="11.5" fill="#A9B8E4" font-family="Verdana,sans-serif">Drag the Earth to spin it, or use the controls.</text>
+          <text x="14" y="314" font-size="9.5" font-style="italic" fill="#93A2CC" font-family="Verdana,sans-serif">(Arrastra la Tierra para girarla o usa los controles.)</text>
         </g>
       </svg>
     </div>
@@ -410,20 +432,25 @@
           <rect x="163" y="234" width="18" height="26" fill="#3A5470"/>
         </g>
         <g id="windows"></g>
-        <text x="14" y="280" font-size="12" fill="#DCEBDD" font-family="Verdana,sans-serif">&#8592; east</text>
-        <text x="406" y="280" font-size="12" fill="#DCEBDD" text-anchor="end" font-family="Verdana,sans-serif">west &#8594;</text>
-        <text id="skyHint" x="210" y="304" font-size="11.5" fill="#C6DEC9" text-anchor="middle"
+        <text x="14" y="278" font-size="12" fill="#DCEBDD" font-family="Verdana,sans-serif">&#8592; east</text>
+        <text x="14" y="289" font-size="9.5" font-style="italic" fill="#C4D6C6" font-family="Verdana,sans-serif">(este)</text>
+        <text x="406" y="278" font-size="12" fill="#DCEBDD" text-anchor="end" font-family="Verdana,sans-serif">west &#8594;</text>
+        <text x="406" y="289" font-size="9.5" font-style="italic" fill="#C4D6C6" text-anchor="end" font-family="Verdana,sans-serif">(oeste)</text>
+        <text id="skyHint" x="210" y="301" font-size="11.5" fill="#C6DEC9" text-anchor="middle"
               font-family="Verdana,sans-serif">The Sun isn't moving. Earth is turning under it.</text>
-        <rect x="10" y="8" width="228" height="24" rx="12" fill="#0A1231" fill-opacity=".55" stroke="#5D6E9E" stroke-opacity=".7"/>
+        <text id="skyHintEs" x="210" y="313" font-size="9.5" font-style="italic" fill="#B6D0BA" text-anchor="middle"
+              font-family="Verdana,sans-serif">(El Sol no se mueve. La Tierra gira debajo de él.)</text>
+        <rect x="10" y="8" width="252" height="40" rx="12" fill="#0A1231" fill-opacity=".55" stroke="#5D6E9E" stroke-opacity=".7"/>
         <text x="22" y="24.5" font-size="11.5" fill="#FFFFFF" font-family="Verdana,sans-serif">Austin's sky, outside the school</text>
+        <text x="22" y="39" font-size="9.5" font-style="italic" fill="#D6DEEF" font-family="Verdana,sans-serif">(El cielo de Austin, afuera de la escuela)</text>
       </svg>
     </div>
   </div>
 
   <div class="readouts">
-    <div class="rd"><div class="lbl">Clock in Austin</div><div class="val" id="clockOut">4:00 P.M.</div></div>
-    <div class="rd"><div class="lbl">Hours since school ended</div><div class="val" id="hoursOut">0 hours</div></div>
-    <div class="rd" id="turnCard"><div class="lbl">How far Earth has turned</div><div class="val" id="turnOut">no turn yet</div></div>
+    <div class="rd"><div class="lbl">Clock in Austin<span class="es">(Reloj en Austin)</span></div><div class="val" id="clockOut">4:00 P.M.</div></div>
+    <div class="rd"><div class="lbl">Hours since school ended<span class="es">(Horas desde que terminó la escuela)</span></div><div class="val" id="hoursOut">0 hours</div></div>
+    <div class="rd" id="turnCard"><div class="lbl">How far Earth has turned<span class="es">(Cuánto ha girado la Tierra)</span></div><div class="val" id="turnOut">no turn yet</div></div>
   </div>
 
   <div class="controls">
@@ -431,33 +458,33 @@
       <span class="cap">4:00 P.M.</span>
       <input id="timeSlider" type="range" min="0" max="24" step="0.5" value="0"
              aria-label="Hours after the school day ends">
-      <span class="cap">24 hours later</span>
+      <span class="cap">24 hours later<span class="es">(24 horas después)</span></span>
     </div>
     <div class="btns">
-      <button id="btnBack">&#8592; 1 hour</button>
-      <button id="btnFwd">1 hour &#8594;</button>
-      <button id="btnHalf" class="key">Jump 12 hours</button>
-      <button id="btnPlay">Play the day</button>
-      <button id="btnReset">Back to 4:00 P.M.</button>
+      <button id="btnBack">&#8592; 1 hour<span class="es">(1 hora)</span></button>
+      <button id="btnFwd">1 hour &#8594;<span class="es">(1 hora)</span></button>
+      <button id="btnHalf" class="key">Jump 12 hours<span class="es">(Salta 12 horas)</span></button>
+      <button id="btnPlay">Play the day<span class="es">(Reproduce el día)</span></button>
+      <button id="btnReset">Back to 4:00 P.M.<span class="es">(Volver a las 4:00 p. m.)</span></button>
     </div>
   </div>
 
   <div class="sec missions">
-    <h2>Do These Three Things and Get Three Check Marks</h2>
-    <p class="sub" style="margin-bottom:0">Follow each one exactly. The box turns green when you get it.</p>
+    <h2>Do These Three Things and Get Three Check Marks<span class="es">(Haz estas tres cosas y consigue tres marcas)</span></h2>
+    <p class="sub" style="margin-bottom:0">Follow each one exactly. The box turns green when you get it.<span class="es">(Sigue cada una con cuidado. La casilla se pone verde cuando lo logras.)</span></p>
     <ul class="mlist" id="missionList">
-      <li data-m="0"><span class="box">&#10003;</span><span class="mtxt">Press <b>Back to 4:00 P.M.</b> Then press <b>Jump 12 hours</b>. The clock should say 4:00 A.M. and the last box should say one-half turn.</span></li>
-      <li data-m="1"><span class="box">&#10003;</span><span class="mtxt">Drag the yellow dot on the slider until the clock says <b>6:00 A.M.</b> That is sunrise. Watch the Sun come up on the east side.</span></li>
-      <li data-m="2"><span class="box">&#10003;</span><span class="mtxt">Press <b>Play the day</b> and let it run all the way to the end. Earth makes one whole turn in 24 hours.</span></li>
+      <li data-m="0"><span class="box">&#10003;</span><span class="mtxt">Press <b>Back to 4:00 P.M.</b> Then press <b>Jump 12 hours</b>. The clock should say 4:00 A.M. and the last box should say one-half turn.<span class="es">(Presiona Volver a las 4:00 p. m. Luego presiona Salta 12 horas. El reloj debe decir 4:00 a. m. y la última casilla debe decir media vuelta.)</span></span></li>
+      <li data-m="1"><span class="box">&#10003;</span><span class="mtxt">Drag the yellow dot on the slider until the clock says <b>6:00 A.M.</b> That is sunrise. Watch the Sun come up on the east side.<span class="es">(Arrastra el punto amarillo del control deslizante hasta que el reloj diga 6:00 a. m. Ese es el amanecer. Observa cómo sale el Sol por el este.)</span></span></li>
+      <li data-m="2"><span class="box">&#10003;</span><span class="mtxt">Press <b>Play the day</b> and let it run all the way to the end. Earth makes one whole turn in 24 hours.<span class="es">(Presiona Reproduce el día y déjalo llegar hasta el final. La Tierra da una vuelta completa en 24 horas.)</span></span></li>
     </ul>
-    <div class="btns"><button id="btnToQuiz" class="key">Go to the test question</button></div>
+    <div class="btns"><button id="btnToQuiz" class="key">Go to the test question<span class="es">(Ve a la pregunta de la prueba)</span></button></div>
   </div>
 
   <div class="sec">
     <div class="quizhead">
       <div>
-        <h2>Now try the test question</h2>
-        <p class="sub" style="margin:0">Pick an answer. If it isn't right, you'll find out why and you can try again. Not sure? Go back up and spin the Earth to check.</p>
+        <h2>Now try the test question<span class="es">(Ahora intenta la pregunta de la prueba)</span></h2>
+        <p class="sub" style="margin:0">Pick an answer. If it isn't right, you'll find out why and you can try again. Not sure? Go back up and spin the Earth to check.<span class="es">(Elige una respuesta. Si no es correcta, sabrás por qué y podrás intentarlo de nuevo. ¿No estás seguro? Vuelve arriba y gira la Tierra para comprobarlo.)</span></p>
       </div>
       <div class="score">
         <div class="stars-row" id="starsRow">☆☆☆☆☆</div>
@@ -470,8 +497,8 @@
       <h2 id="finaleTitle">You earned it: Rotation Ranger</h2>
       <p id="finaleText"></p>
       <div class="btns">
-        <button id="btnAgain">Play the questions again</button>
-        <button id="btnLab">Back to the spin lab</button>
+        <button id="btnAgain">Play the questions again<span class="es">(Juega las preguntas otra vez)</span></button>
+        <button id="btnLab">Back to the spin lab<span class="es">(Volver al laboratorio)</span></button>
       </div>
     </div>
   </div>
@@ -576,6 +603,34 @@ if (typeof module !== "undefined" && module.exports){
   var $ = function(id){ return document.getElementById(id); };
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Set an element's text to an English line with a smaller italic Spanish line under it.
+  function setBi(el, en, es){
+    el.textContent = "";
+    el.appendChild(document.createTextNode(en));
+    if (es){
+      var s = document.createElement("span");
+      s.className = "es";
+      s.textContent = "(" + es + ")";
+      el.appendChild(s);
+    }
+  }
+  function turnWordsEs(elapsed){
+    var t = elapsed / 24;
+    if (t <= 0.001) return "aún no gira";
+    if (Math.abs(t - 0.25) < 0.011) return "un cuarto de vuelta";
+    if (Math.abs(t - 0.5)  < 0.011) return "media vuelta";
+    if (Math.abs(t - 0.75) < 0.011) return "tres cuartos de vuelta";
+    if (Math.abs(t - 1)    < 0.011) return "una vuelta completa";
+    return Math.round(t * 100) + "% de una vuelta";
+  }
+  function hoursWordsEs(elapsed){
+    if (elapsed === 0) return "0 horas";
+    var whole = Math.floor(elapsed);
+    var half = (elapsed - whole) >= 0.5;
+    if (whole === 0) return "30 minutos";
+    return whole + (half ? "½" : "") + (whole === 1 && !half ? " hora" : " horas");
+  }
+
   var EC = { x: 272, y: 160, r: 86 };   // Earth centre and radius in the space view
   var elapsed = 0;
   var missionsDone = [false, false, false];
@@ -640,9 +695,9 @@ if (typeof module !== "undefined" && module.exports){
 
   (function buildGaugeTicks(){
     var labels = [
-      { turn: 0.25, text: "\u00BC turn" },
-      { turn: 0.5,  text: "\u00BD turn" },
-      { turn: 0.75, text: "\u00BE turn" }
+      { turn: 0.25, text: "\u00BC turn", es: "(\u00BC de vuelta)" },
+      { turn: 0.5,  text: "\u00BD turn", es: "(media vuelta)" },
+      { turn: 0.75, text: "\u00BE turn", es: "(\u00BE de vuelta)" }
     ];
     var out = "";
     for (var i = 0; i < labels.length; i++){
@@ -651,8 +706,10 @@ if (typeof module !== "undefined" && module.exports){
       var tx = circlePoint(EC.x, EC.y, 124, deg);
       out += '<line x1="' + t1.x.toFixed(1) + '" y1="' + t1.y.toFixed(1) + '" x2="' + t2.x.toFixed(1) +
              '" y2="' + t2.y.toFixed(1) + '" stroke="#5B6BA8" stroke-width="2"/>';
-      out += '<text x="' + tx.x.toFixed(1) + '" y="' + (tx.y + 4).toFixed(1) + '" text-anchor="middle">' +
-             labels[i].text + '</text>';
+      out += '<text x="' + tx.x.toFixed(1) + '" y="' + (tx.y + 2).toFixed(1) + '" text-anchor="middle">' +
+             '<tspan x="' + tx.x.toFixed(1) + '">' + labels[i].text + '</tspan>' +
+             '<tspan x="' + tx.x.toFixed(1) + '" dy="9.5" font-size="8.5" font-style="italic" fill="#7C8CC6">' +
+             labels[i].es + '</tspan></text>';
     }
     $("gaugeTicks").innerHTML = out;
   })();
@@ -735,14 +792,18 @@ if (typeof module !== "undefined" && module.exports){
 
     // --- readouts ---
     $("clockOut").textContent = formatClock(austinHour(elapsed));
-    $("hoursOut").textContent = hoursWords(elapsed);
-    $("turnOut").textContent = turnWords(elapsed);
+    setBi($("hoursOut"), hoursWords(elapsed), hoursWordsEs(elapsed));
+    setBi($("turnOut"), turnWords(elapsed), turnWordsEs(elapsed));
     var halfish = Math.abs(elapsed - 12) < 0.01;
     $("turnCard").className = halfish ? "rd hot" : "rd";
 
-    $("skyHint").textContent = day
-      ? "The Sun isn't moving. Earth is turning under it."
-      : "The Sun is still shining. Austin turned to face away.";
+    if (day){
+      $("skyHint").textContent = "The Sun isn't moving. Earth is turning under it.";
+      $("skyHintEs").textContent = "(El Sol no se mueve. La Tierra gira debajo de él.)";
+    } else {
+      $("skyHint").textContent = "The Sun is still shining. Austin turned to face away.";
+      $("skyHintEs").textContent = "(El Sol sigue brillando. Austin giró para quedar de espaldas.)";
+    }
 
     // --- missions ---
     if (Math.abs(elapsed - 12) < 0.01) missionsDone[0] = true;
@@ -774,7 +835,7 @@ if (typeof module !== "undefined" && module.exports){
   function stopPlaying(){
     playing = false;
     if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-    $("btnPlay").textContent = "Play the day";
+    setBi($("btnPlay"), "Play the day", "Reproduce el día");
   }
   function step(stamp){
     if (!playing) return;
@@ -796,7 +857,7 @@ if (typeof module !== "undefined" && module.exports){
       return;
     }
     playing = true; lastStamp = 0;
-    $("btnPlay").textContent = "Pause";
+    setBi($("btnPlay"), "Pause", "Pausa");
     rafId = requestAnimationFrame(step);
   });
 
@@ -846,75 +907,104 @@ if (typeof module !== "undefined" && module.exports){
   var QUESTIONS = [
     {
       text: "At a school in Austin, Texas, the school day ends at 4:00 P.M. Which event will happen during the 12 hours after the school day ends?",
+      es: "En una escuela de Austin, Texas, el día escolar termina a las 4:00 p. m. ¿Qué sucederá durante las 12 horas después de que termina la escuela?",
       options: [
         { text: "The Sun will move halfway around Earth.",
+          es: "El Sol se moverá hasta la mitad alrededor de la Tierra.",
           ok: false,
           fb: "The Sun looks like it moves, but it stays put while Earth spins. In the Austin sky view, the Sun slid across the sky only because you turned the Earth. Earth does the moving, not the Sun.",
-          go: { label: "Watch the Sun cross Austin's sky", hours: 2 } },
+          fbEs: "El Sol parece moverse, pero se queda quieto mientras la Tierra gira. En la vista del cielo de Austin, el Sol cruzó el cielo solo porque tú giraste la Tierra. La Tierra es la que se mueve, no el Sol.",
+          go: { label: "Watch the Sun cross Austin's sky", labelEs: "Observa el Sol cruzar el cielo de Austin", hours: 2 } },
         { text: "The Sun will stop shining on Earth.",
+          es: "El Sol dejará de brillar sobre la Tierra.",
           ok: false,
           fb: "The Sun never switches off. When Austin gets dark, look at the space view: the Sun is still lighting up half of Earth. Austin has just turned to the night side.",
-          go: { label: "Show me Austin at midnight", hours: 8 } },
+          fbEs: "El Sol nunca se apaga. Cuando Austin se oscurece, mira la vista del espacio: el Sol sigue iluminando la mitad de la Tierra. Austin solo giró hacia el lado de noche.",
+          go: { label: "Show me Austin at midnight", labelEs: "Muéstrame Austin a la medianoche", hours: 8 } },
         { text: "Earth will complete one-half turn on its axis.",
+          es: "La Tierra completará media vuelta sobre su eje.",
           ok: true,
-          fb: "Earth makes one whole turn on its axis about every 24 hours. Half of 24 is 12, so in 12 hours Earth makes one-half turn. That is why 4:00 P.M. becomes 4:00 A.M., and why Austin goes from daylight to dark." }
+          fb: "Earth makes one whole turn on its axis about every 24 hours. Half of 24 is 12, so in 12 hours Earth makes one-half turn. That is why 4:00 P.M. becomes 4:00 A.M., and why Austin goes from daylight to dark.",
+          fbEs: "La Tierra da una vuelta completa sobre su eje aproximadamente cada 24 horas. La mitad de 24 es 12, así que en 12 horas la Tierra da media vuelta. Por eso las 4:00 p. m. se convierten en 4:00 a. m., y por eso Austin pasa del día a la oscuridad." }
       ,
         { text: "Earth will move halfway around the Sun.",
+          es: "La Tierra se moverá hasta la mitad alrededor del Sol.",
           ok: false,
           fb: "That is Earth's other motion, called its orbit. One full trip around the Sun takes about 365 days, so halfway around would take about 6 months. Twelve hours is far too short for that.",
-          go: { label: "See what 12 hours really does", hours: 12 } }
+          fbEs: "Ese es el otro movimiento de la Tierra, llamado órbita. Una vuelta completa alrededor del Sol tarda unos 365 días, así que la mitad tardaría unos 6 meses. Doce horas es muy poco para eso.",
+          go: { label: "See what 12 hours really does", labelEs: "Mira lo que 12 horas hacen en realidad", hours: 12 } }
       ]
     },
     {
       text: "It is 2:00 A.M. in Austin and the sky is completely dark. What is the Sun doing right now?",
+      es: "Son las 2:00 a. m. en Austin y el cielo está completamente oscuro. ¿Qué está haciendo el Sol en este momento?",
       options: [
-        { text: "Shining on the other side of Earth.", ok: true,
-          fb: "Exactly. The Sun shines all the time. Half of Earth is always in daylight. At 2:00 A.M., Austin is on the half that has turned away." },
-        { text: "Turned off until morning.", ok: false,
-          fb: "Stars like our Sun don't turn off and on. Spin the Earth to the middle of the night and check the space view: the day side is still bright." },
-        { text: "Hiding behind the Moon.", ok: false,
-          fb: "That is a solar eclipse, and it only lasts a few minutes and only happens in daytime. Ordinary night is caused by Earth's rotation, not by the Moon." },
-        { text: "Traveling back to the east side of the sky.", ok: false,
-          fb: "The Sun isn't traveling anywhere. Austin keeps turning, so the Sun comes back into view in the east about 12 hours after it set." }
+        { text: "Shining on the other side of Earth.", es: "Brillando en el otro lado de la Tierra.", ok: true,
+          fb: "Exactly. The Sun shines all the time. Half of Earth is always in daylight. At 2:00 A.M., Austin is on the half that has turned away.",
+          fbEs: "Exacto. El Sol brilla todo el tiempo. La mitad de la Tierra siempre tiene luz de día. A las 2:00 a. m., Austin está en la mitad que giró hacia el otro lado." },
+        { text: "Turned off until morning.", es: "Apagado hasta la mañana.", ok: false,
+          fb: "Stars like our Sun don't turn off and on. Spin the Earth to the middle of the night and check the space view: the day side is still bright.",
+          fbEs: "Las estrellas como nuestro Sol no se apagan ni se encienden. Gira la Tierra hasta la mitad de la noche y mira la vista del espacio: el lado de día sigue iluminado." },
+        { text: "Hiding behind the Moon.", es: "Escondido detrás de la Luna.", ok: false,
+          fb: "That is a solar eclipse, and it only lasts a few minutes and only happens in daytime. Ordinary night is caused by Earth's rotation, not by the Moon.",
+          fbEs: "Eso es un eclipse solar, que solo dura unos minutos y solo ocurre de día. La noche normal la causa la rotación de la Tierra, no la Luna." },
+        { text: "Traveling back to the east side of the sky.", es: "Viajando de regreso al lado este del cielo.", ok: false,
+          fb: "The Sun isn't traveling anywhere. Austin keeps turning, so the Sun comes back into view in the east about 12 hours after it set.",
+          fbEs: "El Sol no viaja a ningún lado. Austin sigue girando, así que el Sol vuelve a aparecer por el este unas 12 horas después de ocultarse." }
       ]
     },
     {
       text: "Which of these takes Earth about 24 hours?",
+      es: "¿Cuál de estas cosas le toma a la Tierra unas 24 horas?",
       options: [
-        { text: "One complete turn on its axis.", ok: true,
-          fb: "Right. One rotation takes about 24 hours, which is exactly why a day is 24 hours long." },
-        { text: "One complete trip around the Sun.", ok: false,
-          fb: "A trip around the Sun takes about 365 days, which is one year. The 24-hour motion is the spin, not the trip." },
-        { text: "One-half turn on its axis.", ok: false,
-          fb: "Half a turn takes 12 hours. Double it to get a whole turn: 24 hours." },
-        { text: "One complete set of Moon phases.", ok: false,
-          fb: "The Moon takes about a month to go through its phases. Earth's spin is much faster than that." }
+        { text: "One complete turn on its axis.", es: "Una vuelta completa sobre su eje.", ok: true,
+          fb: "Right. One rotation takes about 24 hours, which is exactly why a day is 24 hours long.",
+          fbEs: "Correcto. Una rotación tarda unas 24 horas, que es exactamente por lo que un día dura 24 horas." },
+        { text: "One complete trip around the Sun.", es: "Un viaje completo alrededor del Sol.", ok: false,
+          fb: "A trip around the Sun takes about 365 days, which is one year. The 24-hour motion is the spin, not the trip.",
+          fbEs: "Un viaje alrededor del Sol tarda unos 365 días, que es un año. El movimiento de 24 horas es el giro, no el viaje." },
+        { text: "One-half turn on its axis.", es: "Media vuelta sobre su eje.", ok: false,
+          fb: "Half a turn takes 12 hours. Double it to get a whole turn: 24 hours.",
+          fbEs: "Media vuelta tarda 12 horas. Duplícalo para una vuelta completa: 24 horas." },
+        { text: "One complete set of Moon phases.", es: "Un ciclo completo de fases de la Luna.", ok: false,
+          fb: "The Moon takes about a month to go through its phases. Earth's spin is much faster than that.",
+          fbEs: "La Luna tarda alrededor de un mes en pasar por sus fases. El giro de la Tierra es mucho más rápido que eso." }
       ]
     },
     {
       text: "About how long does it take Earth to travel halfway around the Sun?",
+      es: "¿Aproximadamente cuánto tarda la Tierra en viajar la mitad alrededor del Sol?",
       options: [
-        { text: "About 6 months.", ok: true,
-          fb: "Yes. A full orbit is about 365 days, so halfway is about half a year. Orbiting is slow. Spinning is fast." },
-        { text: "About 12 hours.", ok: false,
-          fb: "Twelve hours is half a spin, not half an orbit. Those are two different motions, and this is the mix-up the test question was checking for." },
-        { text: "About 24 hours.", ok: false,
-          fb: "Twenty-four hours is one whole spin on Earth's axis. The trip around the Sun takes about 365 of those days." },
-        { text: "About one week.", ok: false,
-          fb: "A week is only 7 spins. Earth needs about 182 days to get halfway around the Sun." }
+        { text: "About 6 months.", es: "Unos 6 meses.", ok: true,
+          fb: "Yes. A full orbit is about 365 days, so halfway is about half a year. Orbiting is slow. Spinning is fast.",
+          fbEs: "Sí. Una órbita completa es de unos 365 días, así que la mitad es medio año. Orbitar es lento. Girar es rápido." },
+        { text: "About 12 hours.", es: "Unas 12 horas.", ok: false,
+          fb: "Twelve hours is half a spin, not half an orbit. Those are two different motions, and this is the mix-up the test question was checking for.",
+          fbEs: "Doce horas es medio giro, no media órbita. Son dos movimientos distintos, y esa es la confusión que revisaba la pregunta de la prueba." },
+        { text: "About 24 hours.", es: "Unas 24 horas.", ok: false,
+          fb: "Twenty-four hours is one whole spin on Earth's axis. The trip around the Sun takes about 365 of those days.",
+          fbEs: "Veinticuatro horas es un giro completo sobre el eje de la Tierra. El viaje alrededor del Sol tarda unos 365 de esos días." },
+        { text: "About one week.", es: "Alrededor de una semana.", ok: false,
+          fb: "A week is only 7 spins. Earth needs about 182 days to get halfway around the Sun.",
+          fbEs: "Una semana son solo 7 giros. La Tierra necesita unos 182 días para llegar a la mitad alrededor del Sol." }
       ]
     },
     {
       text: "Why does the Sun appear to rise in the east and set in the west every single day?",
+      es: "¿Por qué parece que el Sol sale por el este y se oculta por el oeste todos los días?",
       options: [
-        { text: "Because Earth rotates on its axis.", ok: true,
-          fb: "That's it. You proved it in the lab: you never moved the Sun, you only spun the Earth, and the Sun still rose and set." },
-        { text: "Because the Sun circles around Earth once a day.", ok: false,
-          fb: "People believed that a long time ago, but the Sun stays in place and Earth turns. In the space view the Sun never moved once." },
-        { text: "Because Earth goes around the Sun once a day.", ok: false,
-          fb: "Earth does orbit the Sun, but that takes about 365 days, not one. Sunrise and sunset come from the daily spin." },
-        { text: "Because the Sun gets brighter and then dimmer.", ok: false,
-          fb: "The Sun's brightness stays about the same. What changes is whether your part of Earth is facing it." }
+        { text: "Because Earth rotates on its axis.", es: "Porque la Tierra gira sobre su eje.", ok: true,
+          fb: "That's it. You proved it in the lab: you never moved the Sun, you only spun the Earth, and the Sun still rose and set.",
+          fbEs: "Eso es. Lo comprobaste en el laboratorio: nunca moviste el Sol, solo giraste la Tierra, y el Sol igual salió y se ocultó." },
+        { text: "Because the Sun circles around Earth once a day.", es: "Porque el Sol gira alrededor de la Tierra una vez al día.", ok: false,
+          fb: "People believed that a long time ago, but the Sun stays in place and Earth turns. In the space view the Sun never moved once.",
+          fbEs: "La gente creía eso hace mucho tiempo, pero el Sol se queda en su lugar y la Tierra gira. En la vista del espacio el Sol nunca se movió." },
+        { text: "Because Earth goes around the Sun once a day.", es: "Porque la Tierra da la vuelta al Sol una vez al día.", ok: false,
+          fb: "Earth does orbit the Sun, but that takes about 365 days, not one. Sunrise and sunset come from the daily spin.",
+          fbEs: "La Tierra sí orbita el Sol, pero eso tarda unos 365 días, no uno. El amanecer y el atardecer vienen del giro diario." },
+        { text: "Because the Sun gets brighter and then dimmer.", es: "Porque el Sol se pone más brillante y luego más tenue.", ok: false,
+          fb: "The Sun's brightness stays about the same. What changes is whether your part of Earth is facing it.",
+          fbEs: "El brillo del Sol se mantiene casi igual. Lo que cambia es si tu parte de la Tierra está frente a él." }
       ]
     }
   ];
@@ -939,7 +1029,7 @@ if (typeof module !== "undefined" && module.exports){
       num.textContent = String(qi + 1);
       var qt = document.createElement("div");
       qt.className = "qtext";
-      qt.textContent = q.text;
+      setBi(qt, q.text, q.es);
       top.appendChild(num); top.appendChild(qt);
       card.appendChild(top);
 
@@ -949,7 +1039,7 @@ if (typeof module !== "undefined" && module.exports){
         var b = document.createElement("button");
         b.className = "opt";
         b.innerHTML = '<span class="ltr">' + LETTERS[oi] + '</span><span class="txt"></span>';
-        b.querySelector(".txt").textContent = opt.text;
+        setBi(b.querySelector(".txt"), opt.text, opt.es);
         b.addEventListener("click", function(){ answer(qi, oi, card, b); });
         opts.appendChild(b);
       });
@@ -984,28 +1074,29 @@ if (typeof module !== "undefined" && module.exports){
       var all = card.querySelectorAll(".opt");
       for (var i = 0; i < all.length; i++) all[i].disabled = true;
       fb.className = "fb right";
-      head.textContent = firstTry[qi] ? "Correct, and here's why. " : "Yes, that's the one. ";
+      if (firstTry[qi]) setBi(head, "Correct, and here's why. ", "Correcto, y aquí está el porqué.");
+      else setBi(head, "Yes, that's the one. ", "Sí, esa es.");
     } else {
       btn.className = "opt wrong";
       btn.disabled = true;
       fb.className = "fb rethink";
-      head.textContent = "Not that one. ";
+      setBi(head, "Not that one. ", "Esa no.");
     }
-    body.textContent = opt.fb;
+    setBi(body, opt.fb, opt.fbEs);
     fb.appendChild(head);
     fb.appendChild(body);
 
     if (!opt.ok){
       var tail = document.createElement("div");
       tail.style.marginTop = "8px";
-      tail.textContent = "Pick another answer when you're ready.";
+      setBi(tail, "Pick another answer when you're ready.", "Elige otra respuesta cuando estés listo.");
       fb.appendChild(tail);
     }
     if (opt.go){
       var act = document.createElement("div");
       act.className = "act";
       var go = document.createElement("button");
-      go.textContent = opt.go.label;
+      setBi(go, opt.go.label, opt.go.labelEs);
       go.addEventListener("click", function(){
         stopPlaying();
         setElapsed(opt.go.hours);
@@ -1025,7 +1116,9 @@ if (typeof module !== "undefined" && module.exports){
       row += firstTry[i] === true ? "\u2605" : "\u2606";
     }
     $("starsRow").textContent = row;
-    $("scoreText").textContent = right + " of " + QUESTIONS.length + " right on the first try";
+    setBi($("scoreText"),
+      right + " of " + QUESTIONS.length + " right on the first try",
+      right + " de " + QUESTIONS.length + " correctas al primer intento");
 
     var solved = 0;
     var cards = $("quiz").querySelectorAll(".q");
@@ -1034,14 +1127,24 @@ if (typeof module !== "undefined" && module.exports){
     }
     if (solved === QUESTIONS.length){
       $("finale").className = "finale show";
-      $("finaleTitle").textContent = right === QUESTIONS.length
-        ? "Perfect run: Rotation Ranger, first try"
-        : "You earned it: Rotation Ranger";
-      $("finaleText").textContent = right === QUESTIONS.length
-        ? "Every answer right the first time. You can explain the whole idea now: Earth turns once every 24 hours, so 12 hours is one-half turn, and that turning is what makes day become night."
-        : "You worked through " + (QUESTIONS.length - right) + " tricky one" +
-          ((QUESTIONS.length - right) === 1 ? "" : "s") +
-          " and got there. Remember the two motions: Earth spins once in 24 hours to make day and night, and Earth orbits the Sun once in about 365 days to make a year.";
+      if (right === QUESTIONS.length){
+        setBi($("finaleTitle"),
+          "Perfect run: Rotation Ranger, first try",
+          "Ronda perfecta: Guardián de la Rotación, al primer intento");
+        setBi($("finaleText"),
+          "Every answer right the first time. You can explain the whole idea now: Earth turns once every 24 hours, so 12 hours is one-half turn, and that turning is what makes day become night.",
+          "Todas correctas al primer intento. Ya puedes explicar toda la idea: la Tierra da una vuelta cada 24 horas, así que 12 horas es media vuelta, y ese giro es lo que hace que el día se convierta en noche.");
+      } else {
+        var missed = QUESTIONS.length - right;
+        setBi($("finaleTitle"),
+          "You earned it: Rotation Ranger",
+          "Te lo ganaste: Guardián de la Rotación");
+        setBi($("finaleText"),
+          "You worked through " + missed + " tricky one" + (missed === 1 ? "" : "s") +
+            " and got there. Remember the two motions: Earth spins once in 24 hours to make day and night, and Earth orbits the Sun once in about 365 days to make a year.",
+          "Resolviste " + missed + (missed === 1 ? " difícil" : " difíciles") +
+            " y lo lograste. Recuerda los dos movimientos: la Tierra gira una vez en 24 horas para hacer el día y la noche, y la Tierra orbita el Sol una vez en unos 365 días para hacer un año.");
+      }
       if (answered) { /* keeps linters quiet about unused variable */ }
     }
   }
