@@ -118,6 +118,7 @@
         <radialGradient id="sunGlow2" cx="50%" cy="50%">
           <stop offset="0%" stop-color="#FFD35F" stop-opacity=".5"/><stop offset="100%" stop-color="#FFD35F" stop-opacity="0"/>
         </radialGradient>
+        <filter id="shadowBlur" x="-10%" y="-60%" width="120%" height="240%"><feGaussianBlur stdDeviation="1.6"/></filter>
       </defs>
       <rect x="0" y="0" width="420" height="252" fill="url(#sky)"/>
       <!-- Sun path guide -->
@@ -129,7 +130,8 @@
       <rect x="0" y="250" width="420" height="50" fill="#2F5734"/>
       <rect x="0" y="250" width="420" height="4" fill="#3C6B44"/>
       <!-- shadow (under the tree) -->
-      <polygon id="shadow" points="210,250 210,250 210,250" fill="#0A1508" fill-opacity=".55"/>
+      <ellipse id="shadowRoot" cx="210" cy="251" rx="20" ry="5" fill="#08110A" fill-opacity=".6"/>
+      <polygon id="shadow" points="210,250 210,250 210,250" fill="#070E08" fill-opacity=".72" filter="url(#shadowBlur)"/>
       <!-- tree -->
       <rect x="205" y="212" width="10" height="40" rx="3" fill="#7A5230"/>
       <circle cx="210" cy="206" r="26" fill="#4FA35E"/>
@@ -222,7 +224,10 @@
     var len = 24 + 150 * (1 - Math.sin(t * Math.PI));        // long at ends, short at noon
     var tipX = TREE_X + dir * len;
     $("shadow").setAttribute("points",
-      (TREE_X - 9) + "," + GROUND + " " + (TREE_X + 9) + "," + GROUND + " " + tipX.toFixed(1) + "," + (GROUND + 6));
+      (TREE_X - 17) + "," + GROUND + " " +
+      (TREE_X + 17) + "," + GROUND + " " +
+      tipX.toFixed(1) + "," + (GROUND + 9) + " " +
+      tipX.toFixed(1) + "," + (GROUND + 2));
 
     // warm the sky near sunrise/sunset
     var warm = Math.abs(t - 0.5) * 2;                        // 0 at noon, 1 at ends
