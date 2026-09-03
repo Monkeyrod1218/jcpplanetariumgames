@@ -76,7 +76,7 @@
   details b{color:var(--text)}
   .sec{margin-top:24px}
 
-  .backbar{margin-bottom:14px}
+  .backbar{padding:14px 0 6px 16px}
   .backlink{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-size:14px;font-weight:bold;
     color:var(--text);text-decoration:none;background:#243468;border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-height:44px}
   .backlink:hover{background:#2E3F7C;border-color:var(--sun)}
@@ -93,13 +93,11 @@
 </head>
 <body>
 
-<svg class="stars" id="starfield" aria-hidden="true"></svg>
+<div class="backbar">
+  <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
+</div>
 
 <div class="wrap">
-
-  <div class="backbar">
-    <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
-  </div>
 
   <h1>Sun &amp; Shadows<span class="es">(El Sol y las sombras)</span></h1>
   <p class="lead">Move the Sun across the sky and watch the shadow change.<span class="es">(Mueve el Sol por el cielo y observa cómo cambia la sombra.)</span></p>
@@ -202,14 +200,6 @@
     for (var i = 0; i < 3; i++){ var v = Math.round(pa[i] + (pb[i]-pa[i])*t).toString(16); o += v.length<2?"0"+v:v; }
     return o;
   }
-
-  /* stars */
-  (function(){
-    var seed = 7, out = "";
-    function rnd(){ seed = (seed*1103515245+12345)%2147483648; return seed/2147483648; }
-    for (var i=0;i<80;i++) out += '<circle cx="'+(rnd()*100).toFixed(2)+'%" cy="'+(rnd()*100).toFixed(2)+'%" r="'+(rnd()*1.3+0.4).toFixed(2)+'" fill="#CFE0FF" opacity="'+(rnd()*0.5+0.15).toFixed(2)+'"/>';
-    $("starfield").innerHTML = out;
-  })();
 
   /* ---- shadow scene ---- */
   var GROUND = 250, TREE_X = 210, ARC = 200, SUN_X0 = 60, SUN_X1 = 360;
