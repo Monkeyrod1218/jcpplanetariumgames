@@ -6,111 +6,60 @@
 <title>Long Days, Short Days — Sunlight & Seasons</title>
 <style>
   :root{
-    --ink:#0B1230;
-    --panel:#16204A;
-    --panel2:#1D2A5C;
-    --line:#31407A;
-    --text:#EAF0FF;
-    --dim:#A5B3DC;
-    --sun:#FFC24B;
-    --sun-soft:#FFE9AE;
-    --pin:#FF6A4D;
-    --good:#57D3A2;
-    --think:#FFD37A;
-    --radius:16px;
+    --ink:#0B1230;--panel:#16204A;--panel2:#1D2A5C;--line:#31407A;
+    --text:#EAF0FF;--dim:#A5B3DC;--sun:#FFC24B;--sun-soft:#FFE9AE;
+    --good:#57D3A2;--think:#FFD37A;--radius:16px;
     --display:"Trebuchet MS","Lucida Grande",Tahoma,sans-serif;
     --body:Verdana,Geneva,"DejaVu Sans",sans-serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{
-    background:var(--ink);color:var(--text);
-    font-family:var(--body);font-size:15px;line-height:1.55;
-    -webkit-text-size-adjust:100%;
-  }
+  body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
   .stars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.7}
-  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:22px 20px 70px}
-  .hero{margin-bottom:16px;text-align:center}
-  .hero h1{margin:0 0 12px}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:22px 20px 70px}
 
-  h1{
-    font-family:var(--display);font-size:clamp(26px,3.6vw,40px);
-    line-height:1.08;letter-spacing:-.5px;margin:0 0 10px;font-weight:700;
-  }
-  .sub{color:var(--dim);max-width:62ch;margin:0;font-size:14px}
-  h2{font-family:var(--display);font-size:22px;margin:0 0 4px;letter-spacing:-.2px}
+  h1{font-family:var(--display);font-size:clamp(24px,5vw,34px);line-height:1.08;letter-spacing:-.5px;margin:0 0 8px;font-weight:700;text-align:center}
+  h2{font-family:var(--display);font-size:19px;margin:0 0 2px}
+  .lead{color:var(--dim);text-align:center;margin:0 auto 4px;max-width:44ch;font-size:14px}
 
-  .steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-  .steps li{
-    display:flex;gap:10px;align-items:flex-start;text-align:left;
-    background:var(--panel);border:1px solid var(--line);
-    border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.4;
-  }
-  .steps .n{
-    flex:none;width:22px;height:22px;border-radius:50%;
-    background:var(--sun);color:#231602;font-family:var(--display);font-weight:700;font-size:13px;
-    display:grid;place-items:center;margin-top:1px;
-  }
-  .steps b{color:var(--think)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px}
 
-  /* ---------- data table ---------- */
-  .tablewrap{overflow-x:auto;margin:0 0 6px;text-align:center}
-  .data-table{margin:6px auto 0;border-collapse:collapse;font-size:13px;
-    background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  .data-table caption{font-family:var(--display);font-weight:700;font-size:16px;margin-bottom:8px;color:var(--text)}
-  .data-table th,.data-table td{border:1px solid var(--line);padding:7px 12px;text-align:center;white-space:nowrap}
-  .data-table th{background:var(--panel2);color:var(--sun-soft);font-family:var(--display)}
-  .data-table td{color:var(--text)}
+  /* ---- daylight bars ---- */
+  .dayrow{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .cityname{width:78px;flex:none;font-family:var(--display);font-weight:700;font-size:15px}
+  .track{flex:1;height:30px;background:#0E1A3D;border:1px solid #26356A;border-radius:8px;overflow:hidden}
+  .fill{height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--sun-soft),var(--sun));transition:width 1.3s ease}
+  .hours{width:92px;flex:none;text-align:right;font-family:var(--display);font-weight:700;color:var(--think);font-size:15px}
+  .times{font-size:12px;color:var(--dim);margin:5px 0 0 90px}
+  .tag{font-family:var(--display);font-weight:700;font-size:12px;margin-left:6px}
+  .tag.short{color:#8FB6FF}.tag.long{color:var(--sun)}
 
-  /* ---------- stage ---------- */
-  .stage{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px auto 0}
-  .view{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;position:relative}
-  .view svg{display:block;width:100%;height:auto}
+  /* ---- tilt ---- */
+  .tiltwrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .tiltwrap svg{flex:1;min-width:240px;max-width:340px;display:block;height:auto}
+  .tiltinfo{flex:1;min-width:220px}
+  .result{font-size:14px;line-height:1.5}
+  .result .win{color:var(--sun);font-weight:700}
+  .result .lose{color:#8FB6FF;font-weight:700}
 
-  /* ---------- readouts ---------- */
-  .readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0 0}
-  .rd{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
-  .rd .lbl{font-size:11.5px;color:var(--dim);margin-bottom:3px}
-  .rd .val{font-family:var(--display);font-size:20px;font-weight:700;line-height:1.15}
-  .rd.hot{border-color:var(--think);box-shadow:0 0 0 2px rgba(255,211,122,.22)}
-  .rd.hot .val{color:var(--think)}
+  /* ---- rule strip ---- */
+  .rule{margin-top:16px;border:1px solid rgba(255,211,122,.5);background:rgba(255,211,122,.09);border-radius:var(--radius);padding:14px 16px;font-size:14.5px;text-align:center}
+  .rule b{color:var(--think)}
 
-  /* ---------- controls ---------- */
-  .controls{margin-top:14px;background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
-  .sliderrow{display:flex;align-items:center;gap:12px}
-  .sliderrow .cap{font-size:12px;color:var(--dim);white-space:nowrap;max-width:34%}
-  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:40px;background:transparent;margin:0;touch-action:pan-y}
-  input[type=range]::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,#3B4C8E,#6C7FD4)}
-  input[type=range]::-moz-range-track{height:12px;border-radius:999px;background:linear-gradient(90deg,#3B4C8E,#6C7FD4)}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:34px;height:34px;border-radius:50%;
-    background:var(--sun);border:3px solid #12193C;margin-top:-11px;box-shadow:0 0 0 3px rgba(255,194,75,.25);cursor:pointer}
-  input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:var(--sun);border:3px solid #12193C;cursor:pointer}
-  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-  button{
-    font-family:var(--body);font-size:14px;color:var(--text);background:#243468;
-    border:1px solid var(--line);border-radius:12px;padding:0 16px;min-height:46px;cursor:pointer;
-    touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,194,75,.22);
-  }
+  /* ---- buttons ---- */
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  button{font-family:var(--body);font-size:14px;color:var(--text);background:#243468;border:1px solid var(--line);
+    border-radius:12px;padding:0 16px;min-height:46px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,194,75,.22)}
   button:hover{background:#2E3F7C}
-  button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--think);outline-offset:2px}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--think);outline-offset:2px}
   button.key{background:var(--sun);color:#231602;border-color:#E0A62F;font-weight:bold}
   button.key:hover{background:#FFD068}
 
-  /* ---------- missions ---------- */
-  .missions{margin-top:14px}
-  .mlist{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
-  .mlist li{display:flex;gap:11px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:13.5px}
-  .box{flex:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;font-size:13px;color:transparent;margin-top:1px}
-  .mlist li.done{border-color:rgba(87,211,162,.55)}
-  .mlist li.done .box{background:var(--good);border-color:var(--good);color:#08321F}
-  .mlist li.done .mtxt{color:var(--dim)}
-  .mtxt b{color:var(--think)}
-
-  /* ---------- quiz ---------- */
-  .quizhead{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  /* ---- quiz ---- */
+  .quizhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:2px}
   .score{font-size:13px;color:var(--dim)}
   .stars-row{letter-spacing:3px;font-size:17px}
-  .q{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 14px;margin-top:12px}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:12px}
   .qnum{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);
     font-family:var(--display);font-weight:700;font-size:14px;margin-right:9px;flex:none}
   .qtop{display:flex;align-items:flex-start}
@@ -127,41 +76,27 @@
   .fb.right{border-color:rgba(87,211,162,.5);background:rgba(87,211,162,.10)}
   .fb.rethink{border-color:rgba(255,211,122,.5);background:rgba(255,211,122,.09)}
   .fb b{font-family:var(--display);font-size:14.5px}
-
   .finale{margin-top:16px;border-radius:var(--radius);padding:20px;border:1px solid var(--sun);background:linear-gradient(160deg,#20305F,#161F45);display:none}
   .finale.show{display:block}
   .finale h2{color:var(--sun)}
 
-  details{margin-top:26px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:13px;color:var(--dim)}
+  details{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:13px;color:var(--dim)}
   summary{cursor:pointer;color:var(--text);font-family:var(--display);font-size:15px}
-  details p{margin:9px 0}
   details b{color:var(--text)}
-  .sec{margin-top:26px}
+  .sec{margin-top:24px}
 
-  /* ---------- back to games ---------- */
-  .backbar{margin-bottom:16px}
+  .backbar{margin-bottom:14px}
   .backlink{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-size:14px;font-weight:bold;
     color:var(--text);text-decoration:none;background:#243468;border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-height:44px}
   .backlink:hover{background:#2E3F7C;border-color:var(--sun)}
 
-  /* ---------- Spanish translations (smaller, italic, in parentheses) ---------- */
+  /* Spanish translations */
   .es{display:block;font-style:italic;font-weight:normal;font-size:.82em;line-height:1.35;color:var(--dim);margin-top:2px}
-  h1 .es{font-size:.46em;color:var(--think);margin-top:8px}
-  .rd .val .es{font-size:.66em;margin-top:3px}
-  .data-table th .es{font-size:.85em;color:var(--dim);margin-top:1px}
-  .data-table caption .es{font-size:.8em}
+  h1 .es{font-size:.5em;color:var(--think);margin-top:6px}
   .btns button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.18;min-height:52px;padding-top:8px;padding-bottom:8px}
   .btns button .es{font-size:.8em}
   .backlink .es{width:100%;text-align:left;font-size:.8em;margin-top:1px}
-  .cap .es{font-size:.9em;white-space:normal}
-  .act button .es{font-size:.85em}
 
-  @media (max-width:760px) and (orientation:portrait){
-    .stage{grid-template-columns:1fr}
-    .readouts{grid-template-columns:1fr}
-    .rd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-    .rd .lbl{margin:0}
-  }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -175,305 +110,149 @@
     <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
   </div>
 
-  <div class="hero">
-    <h1>Long Days, Short Days<span class="es">(Días largos, días cortos)</span></h1>
-    <ol class="steps">
-      <li><span class="n">1</span><span>Two cities wrote down when the Sun rose and set for three days.<span class="es">(Dos ciudades anotaron cuándo salió y se puso el Sol durante tres días.)</span></span></li>
-      <li><span class="n">2</span><span>Press <b>Measure the days</b>. See whose day is longer.<span class="es">(Presiona Mide los días. Observa quién tiene el día más largo.)</span></span></li>
-      <li><span class="n">3</span><span>Tilt the Earth. A side tilted <b>toward</b> the Sun gets long days.<span class="es">(Inclina la Tierra. El lado inclinado hacia el Sol tiene días largos.)</span></span></li>
-      <li><span class="n">4</span><span>Then answer: what season is Sydney having?<span class="es">(Luego responde: ¿qué estación tiene Sídney?)</span></span></li>
-    </ol>
-  </div>
+  <h1>Long Days, Short Days<span class="es">(Días largos, días cortos)</span></h1>
+  <p class="lead">Two cities. One has long days, one has short. Find out the season.<span class="es">(Dos ciudades. Una tiene días largos y otra cortos. Descubre la estación.)</span></p>
 
-  <div class="tablewrap">
-    <table class="data-table">
-      <caption>Sunrise and Sunset Data<span class="es">(Datos de amanecer y atardecer)</span></caption>
-      <thead>
-        <tr>
-          <th>City<span class="es">(Ciudad)</span></th>
-          <th>Day<span class="es">(Día)</span></th>
-          <th>Sunrise<span class="es">(Amanecer)</span></th>
-          <th>Sunset<span class="es">(Atardecer)</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td rowspan="3">Chicago, Illinois</td><td>1</td><td>7:18 a.m.</td><td>4:30 p.m.</td></tr>
-        <tr><td>2</td><td>7:18 a.m.</td><td>4:31 p.m.</td></tr>
-        <tr><td>3</td><td>7:18 a.m.</td><td>4:32 p.m.</td></tr>
-        <tr><td rowspan="3">Sydney, Australia</td><td>1</td><td>5:47 a.m.</td><td>8:09 p.m.</td></tr>
-        <tr><td>2</td><td>5:48 a.m.</td><td>8:09 p.m.</td></tr>
-        <tr><td>3</td><td>5:49 a.m.</td><td>8:09 p.m.</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="stage">
-    <!-- ===== daylight timelines ===== -->
-    <div class="view">
-      <svg id="dayView" viewBox="0 0 420 320" role="img" aria-label="Daylight bars for Chicago and Sydney">
-        <defs>
-          <linearGradient id="dayband" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="#FFE9AE"/>
-            <stop offset="50%" stop-color="#FFD35F"/>
-            <stop offset="100%" stop-color="#FFB84B"/>
-          </linearGradient>
-          <radialGradient id="sunDot" cx="50%" cy="50%">
-            <stop offset="0%" stop-color="#FFF6D8"/>
-            <stop offset="60%" stop-color="#FFD35F"/>
-            <stop offset="100%" stop-color="#FFB01F"/>
-          </radialGradient>
-        </defs>
-        <rect width="420" height="320" fill="#0E1738"/>
-        <text x="16" y="26" font-size="15" font-family="Verdana,sans-serif" fill="#FFFFFF" font-weight="bold">How long is each day?</text>
-        <text x="16" y="41" font-size="10.5" font-style="italic" fill="#AEBAE4" font-family="Verdana,sans-serif">(¿Cuánto dura cada día?)</text>
-        <text x="16" y="59" font-size="11" fill="#C6DEC9" font-family="Verdana,sans-serif">Longer bar = longer day.</text>
-        <text x="16" y="72" font-size="9.5" font-style="italic" fill="#9FB6A6" font-family="Verdana,sans-serif">(Barra más larga = día más largo.)</text>
-        <g id="tlChicago"></g>
-        <g id="tlSydney"></g>
-      </svg>
+  <!-- ===== 1. daylight bars ===== -->
+  <div class="panel">
+    <h2>1. How long is each day?<span class="es">(¿Cuánto dura cada día?)</span></h2>
+    <div class="dayrow">
+      <div class="cityname">Chicago</div>
+      <div class="track"><div class="fill" id="chiFill"></div></div>
+      <div class="hours">≈ 9 hrs</div>
     </div>
+    <div class="times">Sun up 7:18 a.m. → down 4:30 p.m. <span class="tag short">short day</span><span class="es">(El Sol sale 7:18 a. m. → se pone 4:30 p. m. · día corto)</span></div>
+    <div class="dayrow">
+      <div class="cityname">Sydney</div>
+      <div class="track"><div class="fill" id="sydFill"></div></div>
+      <div class="hours">≈ 14 hrs</div>
+    </div>
+    <div class="times">Sun up 5:47 a.m. → down 8:09 p.m. <span class="tag long">long day</span><span class="es">(El Sol sale 5:47 a. m. → se pone 8:09 p. m. · día largo)</span></div>
+    <div class="btns"><button id="btnMeasure" class="key">Measure again<span class="es">(Mide otra vez)</span></button></div>
+  </div>
 
-    <!-- ===== tilt model ===== -->
-    <div class="view">
-      <svg id="tiltView" viewBox="0 0 420 320" role="img" aria-label="A model Earth you can tilt next to the Sun">
+  <!-- ===== 2. tilt ===== -->
+  <div class="panel">
+    <h2>2. Why? Tilt the Earth.<span class="es">(¿Por qué? Inclina la Tierra.)</span></h2>
+    <div class="tiltwrap">
+      <svg viewBox="0 0 300 240" role="img" aria-label="The Sun and a tilted Earth">
         <defs>
           <radialGradient id="sunGrad" cx="50%" cy="50%">
-            <stop offset="0%" stop-color="#FFF3C9"/>
-            <stop offset="55%" stop-color="#FFC24B"/>
-            <stop offset="100%" stop-color="#F59B20"/>
+            <stop offset="0%" stop-color="#FFF3C9"/><stop offset="55%" stop-color="#FFC24B"/><stop offset="100%" stop-color="#F59B20"/>
           </radialGradient>
           <radialGradient id="sunGlow" cx="50%" cy="50%">
-            <stop offset="0%" stop-color="#FFC24B" stop-opacity=".45"/>
-            <stop offset="100%" stop-color="#FFC24B" stop-opacity="0"/>
+            <stop offset="0%" stop-color="#FFC24B" stop-opacity=".45"/><stop offset="100%" stop-color="#FFC24B" stop-opacity="0"/>
           </radialGradient>
         </defs>
-        <rect width="420" height="320" fill="#0E1738"/>
-        <g id="tiltStars"></g>
-        <text x="16" y="24" font-size="15" font-family="Verdana,sans-serif" fill="#FFFFFF" font-weight="bold">Tilt the Earth</text>
-        <text x="16" y="38" font-size="10.5" font-style="italic" fill="#AEBAE4" font-family="Verdana,sans-serif">(Inclina la Tierra)</text>
+        <circle cx="60" cy="120" r="58" fill="url(#sunGlow)"/>
+        <g id="rays" stroke="#FFC24B" stroke-width="2" stroke-linecap="round" opacity=".7"></g>
+        <circle cx="60" cy="120" r="28" fill="url(#sunGrad)"/>
+        <text x="60" y="162" text-anchor="middle" font-size="11" fill="#FFD98A" font-family="Verdana,sans-serif">Sun / Sol</text>
 
-        <!-- Sun -->
-        <circle cx="78" cy="172" r="60" fill="url(#sunGlow)"/>
-        <g id="tiltRays" stroke="#FFC24B" stroke-width="2" stroke-linecap="round" opacity=".7"></g>
-        <circle cx="78" cy="172" r="30" fill="url(#sunGrad)"/>
-        <text x="78" y="216" text-anchor="middle" font-size="11.5" fill="#FFD98A" font-family="Verdana,sans-serif">Sun</text>
-        <text x="78" y="228" text-anchor="middle" font-size="9.5" font-style="italic" fill="#E7B978" font-family="Verdana,sans-serif">(Sol)</text>
-
-        <!-- Chicago season caption (top) -->
-        <text id="chiSeason" x="300" y="40" text-anchor="middle" font-size="11.5" fill="#DCE6FF" font-family="Verdana,sans-serif"></text>
-        <text id="chiSeasonEs" x="300" y="52" text-anchor="middle" font-size="9.5" font-style="italic" fill="#AEBAE4" font-family="Verdana,sans-serif"></text>
-
-        <!-- Earth -->
-        <circle cx="300" cy="170" r="70" fill="#2C79BE"/>
-        <path d="M262 132 q26 -16 52 -6 q20 8 12 24 q-8 16 -34 12 q-24 -4 -30 -14 z" fill="#4FA35E"/>
-        <path d="M300 196 q26 -10 44 4 q14 12 4 24 q-12 14 -34 6 q-20 -8 -18 -20 z" fill="#5FB06D"/>
-        <path id="tiltNight" d="M300 100 A70 70 0 0 1 300 240 Z" fill="rgba(6,12,30,.62)"/>
-        <circle cx="300" cy="170" r="70" fill="none" stroke="#9FD4FF" stroke-opacity=".45" stroke-width="1.5"/>
-        <line id="earthAxis" x1="300" y1="100" x2="300" y2="240" stroke="#EAF0FF" stroke-width="2" stroke-dasharray="4 4" stroke-opacity=".8"/>
-        <text id="nLabel" x="300" y="92" text-anchor="middle" font-size="10" fill="#CBD6F5" font-family="Verdana,sans-serif">N</text>
-        <text id="sLabel" x="300" y="252" text-anchor="middle" font-size="10" fill="#CBD6F5" font-family="Verdana,sans-serif">S</text>
-        <g id="chiDotG"><circle id="chiDot" cx="300" cy="135" r="6.5" fill="#fff"/><circle id="chiDot2" cx="300" cy="135" r="3.5" fill="#FF6A4D"/></g>
-        <g id="sydDotG"><circle id="sydDot" cx="300" cy="205" r="6.5" fill="#fff"/><circle id="sydDot2" cx="300" cy="205" r="3.5" fill="#FFC24B"/></g>
-
-        <!-- Sydney season caption (bottom) -->
-        <text id="sydSeason" x="300" y="296" text-anchor="middle" font-size="11.5" fill="#DCE6FF" font-family="Verdana,sans-serif"></text>
-        <text id="sydSeasonEs" x="300" y="308" text-anchor="middle" font-size="9.5" font-style="italic" fill="#AEBAE4" font-family="Verdana,sans-serif"></text>
+        <circle cx="215" cy="120" r="62" fill="#2C79BE"/>
+        <path d="M182 86 q22 -14 44 -5 q17 7 10 20 q-7 13 -29 10 q-20 -3 -25 -12 z" fill="#4FA35E"/>
+        <path d="M214 142 q22 -8 37 4 q12 10 3 20 q-10 12 -29 5 q-17 -7 -15 -17 z" fill="#5FB06D"/>
+        <path id="tiltNight" d="M215 58 A62 62 0 0 1 215 182 Z" fill="rgba(6,12,30,.6)"/>
+        <circle cx="215" cy="120" r="62" fill="none" stroke="#9FD4FF" stroke-opacity=".45" stroke-width="1.5"/>
+        <line id="axis" x1="215" y1="58" x2="215" y2="182" stroke="#EAF0FF" stroke-width="2" stroke-dasharray="4 4" stroke-opacity=".85"/>
+        <g id="chiDotG"><circle id="chiDot" cx="215" cy="90" r="6" fill="#fff"/><circle id="chiDot2" cx="215" cy="90" r="3.2" fill="#FF6A4D"/></g>
+        <g id="sydDotG"><circle id="sydDot" cx="215" cy="150" r="6" fill="#fff"/><circle id="sydDot2" cx="215" cy="150" r="3.2" fill="#FFC24B"/></g>
+        <text id="nLabel" x="215" y="50" text-anchor="middle" font-size="10" fill="#CBD6F5" font-family="Verdana,sans-serif">Chicago</text>
+        <text id="sLabel" x="215" y="196" text-anchor="middle" font-size="10" fill="#CBD6F5" font-family="Verdana,sans-serif">Sydney</text>
       </svg>
+      <div class="tiltinfo">
+        <div class="result" id="tiltResult"></div>
+        <div class="btns">
+          <button id="btnSyd" class="key">☀ Lean Sydney to the Sun<span class="es">(Inclina Sídney hacia el Sol)</span></button>
+          <button id="btnChi">☀ Lean Chicago to the Sun<span class="es">(Inclina Chicago hacia el Sol)</span></button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="readouts">
-    <div class="rd"><div class="lbl">Chicago's day length<span class="es">(Duración del día en Chicago)</span></div><div class="val" id="chiLen"></div></div>
-    <div class="rd"><div class="lbl">Sydney's day length<span class="es">(Duración del día en Sídney)</span></div><div class="val" id="sydLen"></div></div>
-    <div class="rd" id="tiltCard"><div class="lbl">Tilted toward the Sun<span class="es">(Inclinado hacia el Sol)</span></div><div class="val" id="towardOut"></div></div>
+  <div class="rule">
+    <b>Tilted toward the Sun = long days = summer.</b> Tilted away = short days = winter.
+    <span class="es">(Inclinado hacia el Sol = días largos = verano. Inclinado lejos = días cortos = invierno.)</span>
   </div>
 
-  <div class="controls">
-    <div class="sliderrow">
-      <span class="cap">Chicago toward Sun<span class="es">(Chicago hacia el Sol)</span></span>
-      <input id="tiltSlider" type="range" min="-100" max="100" step="1" value="0" aria-label="Tilt the Earth: negative leans Chicago toward the Sun, positive leans Sydney toward the Sun">
-      <span class="cap">Sydney toward Sun<span class="es">(Sídney hacia el Sol)</span></span>
-    </div>
-    <div class="btns">
-      <button id="btnMeasure" class="key">Measure the days<span class="es">(Mide los días)</span></button>
-      <button id="btnSyd">☀ Lean Sydney to the Sun<span class="es">(Inclina Sídney hacia el Sol)</span></button>
-      <button id="btnChi">☀ Lean Chicago to the Sun<span class="es">(Inclina Chicago hacia el Sol)</span></button>
-      <button id="btnEven">Even day &amp; night<span class="es">(Día y noche iguales)</span></button>
-      <button id="btnReset">Reset<span class="es">(Reiniciar)</span></button>
-    </div>
-  </div>
-
-  <div class="sec missions">
-    <h2>Do These Three Things<span class="es">(Haz estas tres cosas)</span></h2>
-    <p class="sub" style="margin-bottom:0">The box turns green when you do it.<span class="es">(La casilla se pone verde cuando lo haces.)</span></p>
-    <ul class="mlist" id="missionList">
-      <li data-m="0"><span class="box">&#10003;</span><span class="mtxt">Press <b>Measure the days</b>. Sydney's bar is much longer than Chicago's.<span class="es">(Presiona Mide los días. La barra de Sídney es mucho más larga que la de Chicago.)</span></span></li>
-      <li data-m="1"><span class="box">&#10003;</span><span class="mtxt">Slide the tilt so <b>Sydney</b> leans toward the Sun. Sydney gets long days — that is summer.<span class="es">(Desliza la inclinación para que Sídney se incline hacia el Sol. Sídney tiene días largos: eso es verano.)</span></span></li>
-      <li data-m="2"><span class="box">&#10003;</span><span class="mtxt">Now slide it the other way so <b>Chicago</b> leans toward the Sun. See the seasons flip!<span class="es">(Ahora deslízalo al otro lado para que Chicago se incline hacia el Sol. ¡Mira cómo cambian las estaciones!)</span></span></li>
-    </ul>
-    <div class="btns"><button id="btnToQuiz" class="key">Go to the questions<span class="es">(Ve a las preguntas)</span></button></div>
-  </div>
-
+  <!-- ===== quiz ===== -->
   <div class="sec">
     <div class="quizhead">
-      <div>
-        <h2>Now answer the questions<span class="es">(Ahora responde las preguntas)</span></h2>
-        <p class="sub" style="margin:0">Pick an answer. If it is wrong, you can try again. Not sure? Go back up and tilt the Earth.<span class="es">(Elige una respuesta. Si es incorrecta, puedes intentarlo de nuevo. ¿No estás seguro? Vuelve arriba e inclina la Tierra.)</span></p>
-      </div>
-      <div class="score">
-        <div class="stars-row" id="starsRow">☆☆☆☆☆</div>
-        <span id="scoreText"></span>
-      </div>
+      <h2>Now answer<span class="es">(Ahora responde)</span></h2>
+      <div class="score"><div class="stars-row" id="starsRow">☆☆☆</div><span id="scoreText"></span></div>
     </div>
     <div id="quiz"></div>
 
     <div class="finale" id="finale">
       <h2 id="finaleTitle"></h2>
       <p id="finaleText"></p>
-      <div class="btns">
-        <button id="btnAgain">Play the questions again<span class="es">(Juega las preguntas otra vez)</span></button>
-        <button id="btnLab">Back to the tilt lab<span class="es">(Volver al laboratorio)</span></button>
-      </div>
+      <div class="btns"><button id="btnAgain">Play again<span class="es">(Jugar otra vez)</span></button></div>
     </div>
   </div>
 
   <details>
     <summary>For teachers and families</summary>
-    <p><b>The big idea:</b> Earth's axis is tilted about 23.5°. The hemisphere tilted toward the Sun gets more hours of daylight (long days) and is having summer; the hemisphere tilted away gets fewer hours of daylight (short days) and is having winter. In the data, Sydney (Southern Hemisphere) has about 14 hours of daylight, so it is summer there; Chicago (Northern Hemisphere) has about 9 hours, so it is winter there.</p>
-    <p><b>The evidence in the table:</b> an early sunrise (5:47 a.m.) plus a late sunset (8:09 p.m.) adds up to a long day. That long day is the clue that Sydney is tilted toward the Sun.</p>
-    <p><b>Opposite seasons:</b> only one hemisphere can lean toward the Sun at a time, so the north and south always have opposite seasons. Sydney's summer is Chicago's winter.</p>
-    <p><b>One simplification:</b> the model treats tilt as the cause and keeps things symmetric. Real day lengths also depend on latitude, and these readings are near a solstice, when the difference is largest.</p>
+    <p><b>The big idea:</b> Earth's axis is tilted about 23.5°. The hemisphere tilted toward the Sun has longer days and summer; the hemisphere tilted away has shorter days and winter. In the data, Sydney (Southern Hemisphere) has about 14 hours of daylight, so it is summer there; Chicago (Northern Hemisphere) has about 9 hours, so it is winter. The evidence for a long day is an early sunrise (5:47 a.m.) plus a late sunset (8:09 p.m.). The two hemispheres always have opposite seasons.</p>
+    <p><b>One simplification:</b> the model treats tilt as the cause and keeps the two hemispheres symmetric. Real day lengths also depend on latitude, and these readings are near a solstice, when the difference is largest.</p>
   </details>
 
 </div>
 
 <script>
 "use strict";
-
-/* ===== PURE MATH (testable) ===== */
-function decHour(h, m, mer){
-  var hh = h % 12;
-  if (mer === "pm") hh += 12;
-  return hh + m / 60;
-}
-function dayLength(sr, ss){ return ss - sr; }        // decimal hours
-function roundHours(len){ return Math.round(len); }  // "about N hours"
-// Map an hour (0..24) to an x position on the daylight track (window 4:00 to 22:00).
-function hourToX(h){
-  var x = 30 + (h - 4) / 18 * 370;
-  return Math.max(30, Math.min(400, x));
-}
-// Which hemisphere leans toward the Sun. tilt in [-1,1]; + = Sydney(south) toward Sun.
-function towardSun(tilt){
-  if (tilt > 0.15) return "south";
-  if (tilt < -0.15) return "north";
-  return "none";
-}
-// Season words for a hemisphere. sign = +1 south (Sydney), -1 north (Chicago).
-function seasonWords(sign, tilt){
-  var v = tilt * sign;
-  if (v > 0.15) return { en: "long days • summer", es: "días largos • verano" };
-  if (v < -0.15) return { en: "short days • winter", es: "días cortos • invierno" };
-  return { en: "medium days • spring or fall", es: "días medianos • primavera u otoño" };
-}
-/* ===== END PURE MATH ===== */
-
-if (typeof module !== "undefined" && module.exports){
-  module.exports = { decHour: decHour, dayLength: dayLength, roundHours: roundHours,
-    hourToX: hourToX, towardSun: towardSun, seasonWords: seasonWords };
-}
-
 (function(){
-  if (typeof document === "undefined") return;
-
   var $ = function(id){ return document.getElementById(id); };
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // English line with a smaller italic Spanish line under it.
   function setBi(el, en, es){
     el.textContent = "";
     el.appendChild(document.createTextNode(en));
-    if (es){
-      var s = document.createElement("span");
-      s.className = "es";
-      s.textContent = "(" + es + ")";
-      el.appendChild(s);
-    }
+    if (es){ var s = document.createElement("span"); s.className = "es"; s.textContent = "(" + es + ")"; el.appendChild(s); }
   }
-  function setText(id, str){ var el = $(id); if (el) el.textContent = str; }
 
-  var CITIES = {
-    chi: { name:"Chicago", sr:decHour(7,18,"am"), ss:decHour(4,30,"pm"), srT:"7:18 a.m.", ssT:"4:30 p.m.", yTop:150, color:"#FF6A4D" },
-    syd: { name:"Sydney",  sr:decHour(5,47,"am"), ss:decHour(8,9,"pm"),  srT:"5:47 a.m.", ssT:"8:09 p.m.", yTop:240, color:"#FFC24B" }
-  };
-
-  var tilt = 0;          // -1..1
-  var measured = false;
-  var missionsDone = [false, false, false];
-
-  /* ---------- decorative stars ---------- */
-  function seededRandom(seed){
-    var s = seed;
-    return function(){ s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; };
-  }
+  /* ---- decorative stars ---- */
   (function(){
-    var rnd = seededRandom(7), out = "";
-    for (var i = 0; i < 90; i++){
+    var seed = 7, out = "";
+    function rnd(){ seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    for (var i = 0; i < 80; i++){
       out += '<circle cx="' + (rnd()*100).toFixed(2) + '%" cy="' + (rnd()*100).toFixed(2) +
              '%" r="' + (rnd()*1.3+0.4).toFixed(2) + '" fill="#CFE0FF" opacity="' + (rnd()*0.5+0.15).toFixed(2) + '"/>';
     }
     $("starfield").innerHTML = out;
   })();
   (function(){
-    var rnd = seededRandom(31), out = "";
-    for (var i = 0; i < 40; i++){
-      var x = (rnd()*420).toFixed(1), y = (rnd()*320).toFixed(1);
-      if (Math.hypot(x-300, y-170) < 84 || Math.hypot(x-78, y-172) < 70) continue;
-      out += '<circle cx="' + x + '" cy="' + y + '" r="' + (rnd()*1.1+0.4).toFixed(2) + '" fill="#DCE7FF" opacity="' + (rnd()*0.5+0.2).toFixed(2) + '"/>';
-    }
-    $("tiltStars").innerHTML = out;
-  })();
-  (function(){
     var out = "";
     for (var a = -40; a <= 40; a += 20){
-      var rad = a * Math.PI / 180;
-      out += '<line x1="' + (78 + 34*Math.cos(rad)).toFixed(1) + '" y1="' + (172 + 34*Math.sin(rad)).toFixed(1) +
-             '" x2="' + (78 + 48*Math.cos(rad)).toFixed(1) + '" y2="' + (172 + 48*Math.sin(rad)).toFixed(1) + '"/>';
+      var r = a * Math.PI / 180;
+      out += '<line x1="' + (60+30*Math.cos(r)).toFixed(1) + '" y1="' + (120+30*Math.sin(r)).toFixed(1) +
+             '" x2="' + (60+44*Math.cos(r)).toFixed(1) + '" y2="' + (120+44*Math.sin(r)).toFixed(1) + '"/>';
     }
-    $("tiltRays").innerHTML = out;
+    $("rays").innerHTML = out;
   })();
 
-  /* ---------- build the two daylight timelines ---------- */
-  function buildTimeline(gid, key, city, pillEn, pillEs){
-    var yTop = city.yTop, x1 = hourToX(city.sr), x2 = hourToX(city.ss), cy = yTop + 12;
-    var out = "";
-    // night track + daylight band
-    out += '<rect x="30" y="' + yTop + '" width="370" height="24" rx="6" fill="#0E1A3D" stroke="#26356A"/>';
-    out += '<rect x="' + x1.toFixed(1) + '" y="' + yTop + '" width="' + (x2-x1).toFixed(1) + '" height="24" rx="6" fill="url(#dayband)"/>';
-    // city name
-    out += '<text x="30" y="' + (yTop-20) + '" font-size="13.5" font-weight="bold" fill="#FFFFFF" font-family="Verdana,sans-serif">' + city.name + '</text>';
-    // day-length pill
-    out += '<rect x="288" y="' + (yTop-34) + '" width="112" height="26" rx="8" fill="#1D2A5C" stroke="#31407A"/>';
-    out += '<text x="344" y="' + (yTop-20) + '" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#FFD37A" font-family="Verdana,sans-serif">' + pillEn + '</text>';
-    out += '<text x="344" y="' + (yTop-8.5) + '" text-anchor="middle" font-size="8.5" font-style="italic" fill="#AEBAE4" font-family="Verdana,sans-serif">(' + pillEs + ')</text>';
-    // sunrise / sunset times under the band
-    out += '<text x="' + x1.toFixed(1) + '" y="' + (yTop+40) + '" text-anchor="middle" font-size="10" fill="#DCE6FF" font-family="Verdana,sans-serif">' + city.srT + '</text>';
-    out += '<text x="' + x2.toFixed(1) + '" y="' + (yTop+40) + '" text-anchor="middle" font-size="10" fill="#DCE6FF" font-family="Verdana,sans-serif">' + city.ssT + '</text>';
-    // moving sun
-    out += '<circle id="' + key + 'Sun" cx="' + x1.toFixed(1) + '" cy="' + cy + '" r="8" fill="url(#sunDot)" opacity="0"/>';
-    $(gid).innerHTML = out;
+  /* ---- 1. daylight bars ---- */
+  // Bar width is scaled so ~15 hours fills the track (Chicago ~60%, Sydney ~93%).
+  function fillBars(){
+    $("chiFill").style.width = (9 / 15 * 100) + "%";
+    $("sydFill").style.width = (14 / 15 * 100) + "%";
   }
+  function measure(){
+    $("chiFill").style.width = "0";
+    $("sydFill").style.width = "0";
+    if (reduceMotion){ fillBars(); return; }
+    // next frame so the transition runs
+    requestAnimationFrame(function(){ requestAnimationFrame(fillBars); });
+  }
+  $("btnMeasure").addEventListener("click", measure);
 
-  /* ---------- render the tilt model ---------- */
-  var C = { x: 300, y: 170 }, R = 70;
-  function axisPt(freq){
-    var a = tilt * 23.5 * Math.PI / 180;
-    return { x: C.x + freq * R * Math.sin(a), y: C.y - freq * R * Math.cos(a) };
-  }
-  function render(){
-    var Np = axisPt(1), Sp = axisPt(-1), chi = axisPt(0.55), syd = axisPt(-0.55),
-        nl = axisPt(1.16), sl = axisPt(-1.16);
-    var ax = $("earthAxis");
+  /* ---- 2. tilt ---- */
+  var which = "syd";   // which hemisphere leans toward the Sun
+  var C = { x: 215, y: 120 }, R = 62;
+  function pt(f, a){ return { x: C.x + f * R * Math.sin(a), y: C.y - f * R * Math.cos(a) }; }
+  function renderTilt(){
+    var a = (which === "syd" ? 20 : -20) * Math.PI / 180;
+    var Np = pt(1, a), Sp = pt(-1, a), chi = pt(0.5, a), syd = pt(-0.5, a), nl = pt(1.22, a), sl = pt(-1.22, a);
+    var ax = $("axis");
     ax.setAttribute("x1", Np.x.toFixed(1)); ax.setAttribute("y1", Np.y.toFixed(1));
     ax.setAttribute("x2", Sp.x.toFixed(1)); ax.setAttribute("y2", Sp.y.toFixed(1));
     $("chiDot").setAttribute("cx", chi.x.toFixed(1)); $("chiDot").setAttribute("cy", chi.y.toFixed(1));
@@ -483,157 +262,66 @@ if (typeof module !== "undefined" && module.exports){
     $("nLabel").setAttribute("x", nl.x.toFixed(1)); $("nLabel").setAttribute("y", nl.y.toFixed(1));
     $("sLabel").setAttribute("x", sl.x.toFixed(1)); $("sLabel").setAttribute("y", sl.y.toFixed(1));
 
-    var cs = seasonWords(-1, tilt), ss = seasonWords(1, tilt);
-    setText("chiSeason", "Chicago (north): " + cs.en);
-    setText("chiSeasonEs", "(Chicago, norte: " + cs.es + ")");
-    setText("sydSeason", "Sydney (south): " + ss.en);
-    setText("sydSeasonEs", "(Sídney, sur: " + ss.es + ")");
-
-    var toward = towardSun(tilt);
-    if (toward === "south") setBi($("towardOut"), "the South side (Sydney)", "el lado sur (Sídney)");
-    else if (toward === "north") setBi($("towardOut"), "the North side (Chicago)", "el lado norte (Chicago)");
-    else setBi($("towardOut"), "Neither — equal day & night", "Ninguno — día y noche iguales");
-    $("tiltCard").className = toward === "south" ? "rd hot" : "rd";
-
-    if (tilt >= 0.6) missionsDone[1] = true;
-    if (tilt <= -0.6) missionsDone[2] = true;
-    var items = $("missionList").children;
-    for (var m = 0; m < items.length; m++) items[m].className = missionsDone[m] ? "done" : "";
-  }
-
-  function setTilt(v){
-    tilt = Math.max(-1, Math.min(1, v));
-    $("tiltSlider").value = String(Math.round(tilt * 100));
-    render();
-  }
-
-  /* ---------- measure animation ---------- */
-  var rafId = null;
-  function setSunProgress(p){
-    ["chi", "syd"].forEach(function(k){
-      var c = CITIES[k], x = hourToX(c.sr + (c.ss - c.sr) * p), lift = Math.sin(p * Math.PI) * 9;
-      var dot = $(k + "Sun");
-      dot.setAttribute("cx", x.toFixed(1));
-      dot.setAttribute("cy", (c.yTop + 12 - lift).toFixed(1));
-      dot.setAttribute("opacity", "1");
-    });
-  }
-  function measure(){
-    measured = true; missionsDone[0] = true; render();
-    if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
-    if (reduceMotion){ setSunProgress(1); return; }
-    var t0 = null;
-    function frame(ts){
-      if (!t0) t0 = ts;
-      var p = Math.min(1, (ts - t0) / 2200);
-      setSunProgress(p);
-      if (p < 1) rafId = requestAnimationFrame(frame); else rafId = null;
+    var r = $("tiltResult");
+    r.innerHTML = "";
+    var en1 = document.createElement("div"), es1 = document.createElement("div");
+    es1.className = "es"; es1.style.marginTop = "6px";
+    if (which === "syd"){
+      en1.innerHTML = '<span class="win">Sydney</span> leans toward the Sun → long days → <span class="win">summer</span>.<br><span class="lose">Chicago</span> leans away → short days → <span class="lose">winter</span>.';
+      es1.textContent = "(Sídney se inclina hacia el Sol → días largos → verano. Chicago se inclina lejos → días cortos → invierno.)";
+      $("btnSyd").classList.add("key"); $("btnChi").classList.remove("key");
+    } else {
+      en1.innerHTML = '<span class="win">Chicago</span> leans toward the Sun → long days → <span class="win">summer</span>.<br><span class="lose">Sydney</span> leans away → short days → <span class="lose">winter</span>.';
+      es1.textContent = "(Chicago se inclina hacia el Sol → días largos → verano. Sídney se inclina lejos → días cortos → invierno.)";
+      $("btnChi").classList.add("key"); $("btnSyd").classList.remove("key");
     }
-    rafId = requestAnimationFrame(frame);
+    r.appendChild(en1); r.appendChild(es1);
   }
+  $("btnSyd").addEventListener("click", function(){ which = "syd"; renderTilt(); });
+  $("btnChi").addEventListener("click", function(){ which = "chi"; renderTilt(); });
 
-  /* ---------- controls ---------- */
-  $("tiltSlider").addEventListener("input", function(e){ setTilt(parseFloat(e.target.value) / 100); });
-  $("btnMeasure").addEventListener("click", measure);
-  $("btnSyd").addEventListener("click", function(){ setTilt(1); });
-  $("btnChi").addEventListener("click", function(){ setTilt(-1); });
-  $("btnEven").addEventListener("click", function(){ setTilt(0); });
-  $("btnReset").addEventListener("click", function(){
-    if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
-    setTilt(0);
-    ["chi", "syd"].forEach(function(k){ var d = $(k + "Sun"); d.setAttribute("opacity", "0"); d.setAttribute("cx", hourToX(CITIES[k].sr).toFixed(1)); });
-  });
-
-  /* ---------- quiz ---------- */
+  /* ---- quiz (3 questions) ---- */
   var QUESTIONS = [
     {
-      text: "Sydney's Sun rises early (5:47 a.m.) and sets late (8:09 p.m.), so Sydney has about 14 hours of daylight. Which season is Sydney MOST LIKELY having?",
-      es: "El Sol de Sídney sale temprano (5:47 a. m.) y se pone tarde (8:09 p. m.), así que Sídney tiene unas 14 horas de luz. ¿Qué estación tiene Sídney MÁS PROBABLEMENTE?",
+      text: "Sydney has about 14 hours of daylight — a long day. Which season is Sydney MOST LIKELY having?",
+      es: "Sídney tiene unas 14 horas de luz: un día largo. ¿Qué estación tiene Sídney MÁS PROBABLEMENTE?",
       options: [
         { text: "Summer — long days mean Sydney is tilted toward the Sun.", es: "Verano: los días largos significan que Sídney está inclinada hacia el Sol.", ok: true,
-          fb: "Yes! About 14 hours of daylight is a long day. Long days happen when your part of Earth is tilted toward the Sun, and that is summer.",
-          fbEs: "¡Sí! Unas 14 horas de luz es un día largo. Los días largos ocurren cuando tu parte de la Tierra está inclinada hacia el Sol, y eso es verano." },
+          fb: "Yes! Long days happen when your part of Earth is tilted toward the Sun, and that is summer.",
+          fbEs: "¡Sí! Los días largos ocurren cuando tu parte de la Tierra está inclinada hacia el Sol, y eso es verano." },
         { text: "Winter — long days happen in winter.", es: "Invierno: los días largos ocurren en invierno.", ok: false,
           fb: "It's the other way around. Winter has SHORT days. Sydney's long, 14-hour day points to summer.",
-          fbEs: "Es al revés. El invierno tiene días CORTOS. El día largo de 14 horas de Sídney indica verano.",
-          go: { label: "Tilt Sydney toward the Sun", labelEs: "Inclina Sídney hacia el Sol", tilt: 1 } },
-        { text: "Fall — the days are getting shorter.", es: "Otoño: los días se están acortando.", ok: false,
-          fb: "A 14-hour day is a long day, not a short one. The longest days come in summer, when your side leans toward the Sun.",
-          fbEs: "Un día de 14 horas es un día largo, no corto. Los días más largos llegan en verano, cuando tu lado se inclina hacia el Sol." },
-        { text: "You cannot tell the season from sunrise and sunset.", es: "No se puede saber la estación por el amanecer y el atardecer.", ok: false,
-          fb: "You actually can! Day length is a great clue: long days = summer, short days = winter. Sydney's long day means summer.",
-          fbEs: "¡Sí se puede! La duración del día es una gran pista: días largos = verano, días cortos = invierno. El día largo de Sídney significa verano." }
+          fbEs: "Es al revés. El invierno tiene días CORTOS. El día largo de 14 horas de Sídney indica verano." },
+        { text: "You cannot tell from sunrise and sunset.", es: "No se puede saber por el amanecer y el atardecer.", ok: false,
+          fb: "You can! Long days = summer, short days = winter. Sydney's long day means summer.",
+          fbEs: "¡Sí se puede! Días largos = verano, días cortos = invierno. El día largo de Sídney significa verano." }
       ]
     },
     {
-      text: "Chicago's Sun sets at 4:30 p.m., giving only about 9 hours of daylight. What season is Chicago MOST LIKELY having?",
-      es: "El Sol de Chicago se pone a las 4:30 p. m., dando solo unas 9 horas de luz. ¿Qué estación tiene Chicago MÁS PROBABLEMENTE?",
+      text: "Chicago has only about 9 hours of daylight — a short day. Which season is Chicago MOST LIKELY having?",
+      es: "Chicago tiene solo unas 9 horas de luz: un día corto. ¿Qué estación tiene Chicago MÁS PROBABLEMENTE?",
       options: [
         { text: "Winter — short days mean Chicago is tilted away from the Sun.", es: "Invierno: los días cortos significan que Chicago está inclinada lejos del Sol.", ok: true,
-          fb: "Right. About 9 hours is a short day. Short days happen when your side of Earth is tilted away from the Sun — that is winter.",
-          fbEs: "Correcto. Unas 9 horas es un día corto. Los días cortos ocurren cuando tu lado de la Tierra está inclinado lejos del Sol: eso es invierno." },
+          fb: "Right. Short days happen when your side of Earth is tilted away from the Sun — that is winter.",
+          fbEs: "Correcto. Los días cortos ocurren cuando tu lado de la Tierra está inclinado lejos del Sol: eso es invierno." },
         { text: "Summer — the days are long.", es: "Verano: los días son largos.", ok: false,
-          fb: "Nine hours is a short day, not a long one. Short days mean winter, when Chicago leans away from the Sun.",
-          fbEs: "Nueve horas es un día corto, no largo. Los días cortos significan invierno, cuando Chicago se inclina lejos del Sol.",
-          go: { label: "Tilt Chicago away from the Sun", labelEs: "Inclina Chicago lejos del Sol", tilt: 1 } },
+          fb: "Nine hours is a short day, not a long one. Short days mean winter.",
+          fbEs: "Nueve horas es un día corto, no largo. Los días cortos significan invierno." },
         { text: "Summer — it must be warm.", es: "Verano: seguro hace calor.", ok: false,
-          fb: "We only have sunrise and sunset here, and 9 hours of daylight is short. Short days point to winter.",
-          fbEs: "Aquí solo tenemos el amanecer y el atardecer, y 9 horas de luz es poco. Los días cortos indican invierno." },
-        { text: "Spring — day and night are equal.", es: "Primavera: el día y la noche son iguales.", ok: false,
-          fb: "Equal day and night is about 12 hours. Chicago has only 9, so its day is short — that is winter.",
-          fbEs: "El día y la noche iguales son unas 12 horas. Chicago tiene solo 9, así que su día es corto: eso es invierno." }
+          fb: "The clue here is day length, and 9 hours is short. Short days point to winter.",
+          fbEs: "La pista aquí es la duración del día, y 9 horas es poco. Los días cortos indican invierno." }
       ]
     },
     {
-      text: "Why does a place have long days in summer?",
-      es: "¿Por qué un lugar tiene días largos en verano?",
-      options: [
-        { text: "Because that part of Earth is tilted toward the Sun.", es: "Porque esa parte de la Tierra está inclinada hacia el Sol.", ok: true,
-          fb: "Exactly. When your side of Earth leans toward the Sun, it gets more hours of light — long summer days.",
-          fbEs: "Exacto. Cuando tu lado de la Tierra se inclina hacia el Sol, recibe más horas de luz: los días largos del verano." },
-        { text: "Because Earth moves closer to the Sun.", es: "Porque la Tierra se acerca al Sol.", ok: false,
-          fb: "It's the tilt, not the distance. Earth's tilt toward the Sun makes long days and summer.",
-          fbEs: "Es la inclinación, no la distancia. La inclinación de la Tierra hacia el Sol crea los días largos y el verano." },
-        { text: "Because the Sun gets bigger.", es: "Porque el Sol se hace más grande.", ok: false,
-          fb: "The Sun stays the same size. Long summer days come from your side of Earth tilting toward the Sun.",
-          fbEs: "El Sol se mantiene del mismo tamaño. Los días largos del verano vienen de que tu lado de la Tierra se inclina hacia el Sol." },
-        { text: "Because the Sun stops moving.", es: "Porque el Sol deja de moverse.", ok: false,
-          fb: "The reason is Earth's tilt toward the Sun, which gives your side more daylight in summer.",
-          fbEs: "La razón es la inclinación de la Tierra hacia el Sol, que le da a tu lado más luz en verano." }
-      ]
-    },
-    {
-      text: "When it is summer in Sydney (south of the equator), what season is it in Chicago (north of the equator)?",
-      es: "Cuando es verano en Sídney (al sur del ecuador), ¿qué estación es en Chicago (al norte del ecuador)?",
-      options: [
-        { text: "Winter — the two sides of Earth have opposite seasons.", es: "Invierno: los dos lados de la Tierra tienen estaciones opuestas.", ok: true,
-          fb: "Yes. When the south leans toward the Sun, the north leans away. So Sydney's summer is Chicago's winter — just like the short 9-hour day shows.",
-          fbEs: "Sí. Cuando el sur se inclina hacia el Sol, el norte se inclina lejos. Así que el verano de Sídney es el invierno de Chicago, tal como muestra el día corto de 9 horas." },
-        { text: "Summer — it is summer everywhere at once.", es: "Verano: es verano en todas partes a la vez.", ok: false,
-          fb: "Not quite. Only one side of Earth can lean toward the Sun at a time, so the two sides have opposite seasons.",
-          fbEs: "No exactamente. Solo un lado de la Tierra puede inclinarse hacia el Sol a la vez, así que los dos lados tienen estaciones opuestas.",
-          go: { label: "Tilt the Earth and watch it flip", labelEs: "Inclina la Tierra y mira cómo cambia", tilt: -1 } },
-        { text: "Spring — it is always spring in Chicago.", es: "Primavera: siempre es primavera en Chicago.", ok: false,
-          fb: "Chicago's short 9-hour day shows it is tilted away from the Sun right now — that is winter, the opposite of Sydney's summer.",
-          fbEs: "El día corto de 9 horas de Chicago muestra que ahora está inclinada lejos del Sol: eso es invierno, lo opuesto al verano de Sídney." },
-        { text: "The same season as Sydney.", es: "La misma estación que Sídney.", ok: false,
-          fb: "The north and south of Earth have opposite seasons. Sydney's summer means Chicago's winter.",
-          fbEs: "El norte y el sur de la Tierra tienen estaciones opuestas. El verano de Sídney significa el invierno de Chicago." }
-      ]
-    },
-    {
-      text: "Which clue from the table best shows that Sydney has LONG days?",
-      es: "¿Qué pista de la tabla muestra mejor que Sídney tiene días LARGOS?",
+      text: "Which clue best shows that Sydney has LONG days?",
+      es: "¿Qué pista muestra mejor que Sídney tiene días LARGOS?",
       options: [
         { text: "The Sun rises early (5:47 a.m.) and sets late (8:09 p.m.).", es: "El Sol sale temprano (5:47 a. m.) y se pone tarde (8:09 p. m.).", ok: true,
-          fb: "That's the best evidence. An early sunrise plus a late sunset gives about 14 hours of daylight — a long day.",
-          fbEs: "Esa es la mejor evidencia. Un amanecer temprano más un atardecer tarde dan unas 14 horas de luz: un día largo." },
+          fb: "That's the best evidence. An early sunrise plus a late sunset makes a long, ~14-hour day.",
+          fbEs: "Esa es la mejor evidencia. Un amanecer temprano más un atardecer tarde hacen un día largo de unas 14 horas." },
         { text: "The city is in Australia.", es: "La ciudad está en Australia.", ok: false,
-          fb: "Where the city is doesn't measure the day. The sunrise and sunset times do: 5:47 a.m. to 8:09 p.m. is a long day.",
-          fbEs: "El lugar de la ciudad no mide el día. Los horarios de amanecer y atardecer sí: de 5:47 a. m. a 8:09 p. m. es un día largo." },
-        { text: "The Sun rose at almost the same time each day.", es: "El Sol salió casi a la misma hora cada día.", ok: false,
-          fb: "That shows the days barely changed, not that they are long. The long day comes from the early sunrise and late sunset.",
-          fbEs: "Eso muestra que los días casi no cambiaron, no que sean largos. El día largo viene del amanecer temprano y el atardecer tarde." },
+          fb: "Where the city is doesn't measure the day. The sunrise and sunset times do.",
+          fbEs: "El lugar de la ciudad no mide el día. Los horarios de amanecer y atardecer sí." },
         { text: "The Sun set at 8:09 p.m. on Day 1.", es: "El Sol se puso a las 8:09 p. m. el Día 1.", ok: false,
           fb: "Close! A late sunset is part of it, but you also need the early sunrise (5:47 a.m.) to show the whole long day.",
           fbEs: "¡Casi! Un atardecer tarde es parte, pero también necesitas el amanecer temprano (5:47 a. m.) para mostrar todo el día largo." }
@@ -649,37 +337,22 @@ if (typeof module !== "undefined" && module.exports){
     box.innerHTML = "";
     firstTry = new Array(QUESTIONS.length).fill(null);
     $("finale").className = "finale";
-
     QUESTIONS.forEach(function(q, qi){
-      var card = document.createElement("div");
-      card.className = "q";
-      var top = document.createElement("div");
-      top.className = "qtop";
-      var num = document.createElement("span");
-      num.className = "qnum";
-      num.textContent = String(qi + 1);
-      var qt = document.createElement("div");
-      qt.className = "qtext";
-      setBi(qt, q.text, q.es);
-      top.appendChild(num); top.appendChild(qt);
-      card.appendChild(top);
-
-      var opts = document.createElement("div");
-      opts.className = "opts";
+      var card = document.createElement("div"); card.className = "q";
+      var top = document.createElement("div"); top.className = "qtop";
+      var num = document.createElement("span"); num.className = "qnum"; num.textContent = String(qi + 1);
+      var qt = document.createElement("div"); qt.className = "qtext"; setBi(qt, q.text, q.es);
+      top.appendChild(num); top.appendChild(qt); card.appendChild(top);
+      var opts = document.createElement("div"); opts.className = "opts";
       q.options.forEach(function(opt, oi){
-        var b = document.createElement("button");
-        b.className = "opt";
+        var b = document.createElement("button"); b.className = "opt";
         b.innerHTML = '<span class="ltr">' + LETTERS[oi] + '</span><span class="txt"></span>';
         setBi(b.querySelector(".txt"), opt.text, opt.es);
         b.addEventListener("click", function(){ answer(qi, oi, card, b); });
         opts.appendChild(b);
       });
       card.appendChild(opts);
-
-      var fb = document.createElement("div");
-      fb.className = "fb";
-      fb.style.display = "none";
-      card.appendChild(fb);
+      var fb = document.createElement("div"); fb.className = "fb"; fb.style.display = "none"; card.appendChild(fb);
       box.appendChild(card);
     });
     updateScore();
@@ -689,49 +362,25 @@ if (typeof module !== "undefined" && module.exports){
     var opt = QUESTIONS[qi].options[oi];
     if (btn.disabled) return;
     if (firstTry[qi] === null) firstTry[qi] = opt.ok;
-
-    var fb = card.querySelector(".fb");
-    fb.style.display = "block";
-    fb.innerHTML = "";
-    var head = document.createElement("b");
-    var body = document.createElement("span");
-
+    var fb = card.querySelector(".fb"); fb.style.display = "block"; fb.innerHTML = "";
+    var head = document.createElement("b"), body = document.createElement("span");
     if (opt.ok){
       btn.className = "opt right";
       var all = card.querySelectorAll(".opt");
       for (var i = 0; i < all.length; i++) all[i].disabled = true;
       fb.className = "fb right";
-      if (firstTry[qi]) setBi(head, "Correct, and here's why. ", "Correcto, y aquí está el porqué.");
+      if (firstTry[qi]) setBi(head, "Correct! ", "¡Correcto!");
       else setBi(head, "Yes, that's the one. ", "Sí, esa es.");
     } else {
-      btn.className = "opt wrong";
-      btn.disabled = true;
-      fb.className = "fb rethink";
+      btn.className = "opt wrong"; btn.disabled = true; fb.className = "fb rethink";
       setBi(head, "Not that one. ", "Esa no.");
     }
     setBi(body, opt.fb, opt.fbEs);
-    fb.appendChild(head);
-    fb.appendChild(body);
-
+    fb.appendChild(head); fb.appendChild(body);
     if (!opt.ok){
-      var tail = document.createElement("div");
-      tail.style.marginTop = "8px";
-      setBi(tail, "Pick another answer when you're ready.", "Elige otra respuesta cuando estés listo.");
+      var tail = document.createElement("div"); tail.style.marginTop = "8px";
+      setBi(tail, "Try again.", "Intenta otra vez.");
       fb.appendChild(tail);
-    }
-    if (opt.go){
-      var act = document.createElement("div");
-      act.className = "act";
-      act.style.marginTop = "10px";
-      var go = document.createElement("button");
-      setBi(go, opt.go.label, opt.go.labelEs);
-      go.addEventListener("click", function(){
-        setTilt(opt.go.tilt);
-        measure();
-        document.querySelector(".stage").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
-      });
-      act.appendChild(go);
-      fb.appendChild(act);
     }
     updateScore();
   }
@@ -741,39 +390,24 @@ if (typeof module !== "undefined" && module.exports){
     var row = "";
     for (var i = 0; i < QUESTIONS.length; i++) row += firstTry[i] === true ? "★" : "☆";
     $("starsRow").textContent = row;
-    setBi($("scoreText"),
-      right + " of " + QUESTIONS.length + " right on the first try",
-      right + " de " + QUESTIONS.length + " correctas al primer intento");
-
+    setBi($("scoreText"), right + " of " + QUESTIONS.length + " right", right + " de " + QUESTIONS.length + " correctas");
     var solved = 0, cards = $("quiz").querySelectorAll(".q");
     for (var c = 0; c < cards.length; c++) if (cards[c].querySelector(".opt.right")) solved++;
     if (solved === QUESTIONS.length){
       $("finale").className = "finale show";
-      if (right === QUESTIONS.length){
-        setBi($("finaleTitle"), "Perfect run: Season Scientist, first try!", "Ronda perfecta: Científico de las Estaciones, al primer intento");
-        setBi($("finaleText"),
-          "Every answer right the first time! You can explain it: long days mean a place is tilted toward the Sun (summer), and short days mean it is tilted away (winter). Sydney's 14-hour day makes it summer there.",
-          "¡Todas correctas al primer intento! Ya puedes explicarlo: los días largos significan que un lugar está inclinado hacia el Sol (verano), y los días cortos que está inclinado lejos (invierno). El día de 14 horas de Sídney hace que allí sea verano.");
-      } else {
-        setBi($("finaleTitle"), "You earned it: Season Scientist", "Te lo ganaste: Científico de las Estaciones");
-        setBi($("finaleText"),
-          "Nice detective work. Remember: tilted toward the Sun = long days = summer. Tilted away = short days = winter. Sydney's long day means summer.",
-          "Buen trabajo de detective. Recuerda: inclinado hacia el Sol = días largos = verano. Inclinado lejos = días cortos = invierno. El día largo de Sídney significa verano.");
-      }
+      setBi($("finaleTitle"), "You got it: Season Scientist!", "¡Lo lograste: Científico de las Estaciones!");
+      setBi($("finaleText"),
+        "Long days mean a place is tilted toward the Sun (summer). Short days mean it is tilted away (winter). Sydney's long, 14-hour day makes it summer there.",
+        "Los días largos significan que un lugar está inclinado hacia el Sol (verano). Los días cortos, que está inclinado lejos (invierno). El día largo de 14 horas de Sídney hace que allí sea verano.");
     }
   }
 
-  $("btnToQuiz").addEventListener("click", function(){ $("quiz").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); });
   $("btnAgain").addEventListener("click", function(){ buildQuiz(); $("quiz").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); });
-  $("btnLab").addEventListener("click", function(){ document.querySelector(".stage").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" }); });
 
-  /* ---------- start ---------- */
-  buildTimeline("tlChicago", "chi", CITIES.chi, "≈ 9 hours", "unas 9 horas");
-  buildTimeline("tlSydney", "syd", CITIES.syd, "≈ 14 hours", "unas 14 horas");
-  setBi($("chiLen"), "≈ 9 hours", "unas 9 horas • día corto");
-  setBi($("sydLen"), "≈ 14 hours", "unas 14 horas • día largo");
+  /* ---- start ---- */
+  renderTilt();
   buildQuiz();
-  setTilt(0);
+  measure();
 })();
 </script>
 </body>
