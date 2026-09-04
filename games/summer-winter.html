@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summer &amp; Winter Days — The Sun's Path</title>
+<style>
+  :root{
+    --ink:#0B1230;--panel:#16204A;--panel2:#1D2A5C;--line:#31407A;
+    --text:#EAF0FF;--dim:#A5B3DC;--sun:#FFC24B;--sun-soft:#FFE9AE;
+    --good:#57D3A2;--think:#FFD37A;--radius:16px;
+    --display:"Trebuchet MS","Lucida Grande",Tahoma,sans-serif;
+    --body:Verdana,Geneva,"DejaVu Sans",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:22px 20px 70px}
+
+  h1{font-family:var(--display);font-size:clamp(23px,5vw,33px);line-height:1.08;letter-spacing:-.5px;margin:0 0 8px;font-weight:700;text-align:center}
+  h2{font-family:var(--display);font-size:19px;margin:0 0 2px}
+  .lead{color:var(--dim);text-align:center;margin:0 auto 4px;max-width:50ch;font-size:14px}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:16px}
+  .panel svg{display:block;width:100%;height:auto;border-radius:12px}
+
+  .readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  .rd{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+  .rd .lbl{font-size:11.5px;color:var(--dim);margin-bottom:3px}
+  .rd .val{font-family:var(--display);font-size:18px;font-weight:700;line-height:1.15}
+  .rd.hot{border-color:var(--think);box-shadow:0 0 0 2px rgba(255,211,122,.22)}
+  .rd.hot .val{color:var(--think)}
+  .rd .val .es{font-size:.72em;margin-top:3px}
+
+  .daybar{margin-top:12px;height:26px;background:#0E1A3D;border:1px solid #26356a;border-radius:8px;position:relative;overflow:hidden}
+  .dayfill{height:100%;width:0;background:linear-gradient(90deg,var(--sun-soft),var(--sun));transition:width .7s ease}
+  .daylbl{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:bold;color:#20180A;font-family:var(--display)}
+
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  button{font-family:var(--body);font-size:14px;color:var(--text);background:#243468;border:1px solid var(--line);
+    border-radius:12px;padding:0 16px;min-height:46px;cursor:pointer;touch-action:manipulation}
+  button:hover{background:#2E3F7C}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--think);outline-offset:2px}
+  button.key{background:var(--sun);color:#231602;border-color:#E0A62F;font-weight:bold}
+  button.key:hover{background:#FFD068}
+
+  .rule{margin-top:16px;border:1px solid rgba(255,211,122,.5);background:rgba(255,211,122,.09);border-radius:var(--radius);padding:14px 16px;font-size:14.5px;text-align:center}
+  .rule b{color:var(--think)}
+
+  .quizhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:2px}
+  .score{font-size:13px;color:var(--dim)}
+  .stars-row{letter-spacing:3px;font-size:17px}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:12px}
+  .qnum{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);
+    font-family:var(--display);font-weight:700;font-size:14px;margin-right:9px;flex:none}
+  .qtop{display:flex;align-items:flex-start}
+  .qtext{font-size:15px;line-height:1.5}
+  .opts{display:grid;gap:8px;margin-top:12px}
+  .opt{text-align:left;display:flex;gap:10px;align-items:flex-start;width:100%;padding:11px 13px;font-size:14px;line-height:1.45;background:var(--panel2);border-radius:12px}
+  .opt .ltr{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;background:#111C44}
+  .opt:disabled{cursor:default;opacity:1}
+  .opt.right{background:rgba(87,211,162,.16);border-color:var(--good)}
+  .opt.right .ltr{background:var(--good);color:#08321F;border-color:var(--good)}
+  .opt.wrong{background:rgba(255,106,77,.12);border-color:rgba(255,106,77,.6)}
+  .opt.wrong .txt{text-decoration:line-through;color:var(--dim)}
+  .fb{margin-top:11px;padding:12px 14px;border-radius:12px;font-size:13.5px;line-height:1.55;border:1px solid var(--line);background:#111B42}
+  .fb.right{border-color:rgba(87,211,162,.5);background:rgba(87,211,162,.10)}
+  .fb.rethink{border-color:rgba(255,211,122,.5);background:rgba(255,211,122,.09)}
+  .fb b{font-family:var(--display);font-size:14.5px}
+  .finale{margin-top:16px;border-radius:var(--radius);padding:20px;border:1px solid var(--sun);background:linear-gradient(160deg,#20305F,#161F45);display:none}
+  .finale.show{display:block}
+  .finale h2{color:var(--sun)}
+
+  details{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:13px;color:var(--dim)}
+  summary{cursor:pointer;color:var(--text);font-family:var(--display);font-size:15px}
+  details b{color:var(--text)}
+  .sec{margin-top:24px}
+
+  .backbar{padding:14px 0 6px 16px}
+  .backlink{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-size:14px;font-weight:bold;
+    color:var(--text);text-decoration:none;background:#243468;border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-height:44px}
+  .backlink:hover{background:#2E3F7C;border-color:var(--sun)}
+
+  .es{display:block;font-style:italic;font-weight:normal;font-size:.82em;line-height:1.35;color:var(--dim);margin-top:2px}
+  h1 .es{font-size:.5em;color:var(--think);margin-top:6px}
+  .btns button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.18;min-height:52px;padding-top:8px;padding-bottom:8px}
+  .btns button .es{font-size:.8em}
+  .backlink .es{width:100%;text-align:left;font-size:.8em;margin-top:1px}
+  @media (max-width:620px){ .readouts{grid-template-columns:1fr} .rd{display:flex;justify-content:space-between;align-items:baseline;gap:10px} .rd .lbl{margin:0} }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="backbar">
+  <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
+</div>
+
+<div class="wrap">
+
+  <h1>Summer &amp; Winter Days<span class="es">(Días de verano e invierno)</span></h1>
+  <p class="lead">Pick a season and watch the Sun's path across the sky change.<span class="es">(Elige una estación y observa cómo cambia el camino del Sol por el cielo.)</span></p>
+
+  <div class="panel" id="lab">
+    <svg viewBox="0 0 420 240" role="img" aria-label="The Sun's path across the sky in summer and winter">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5E86C4"/><stop offset="100%" stop-color="#BcD6F0"/>
+        </linearGradient>
+        <radialGradient id="sunG" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#FFF6D8"/><stop offset="60%" stop-color="#FFD35F"/><stop offset="100%" stop-color="#FFB01F"/>
+        </radialGradient>
+        <radialGradient id="sunGlow" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#FFD35F" stop-opacity=".55"/><stop offset="100%" stop-color="#FFD35F" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="420" height="192" fill="url(#sky)"/>
+      <!-- both sun paths; the active one is highlighted -->
+      <path id="arcWinter" class="arc" d="M120 190 Q210 46 300 190" fill="none"/>
+      <path id="arcSummer" class="arc" d="M44 190 Q210 -102 376 190" fill="none"/>
+      <!-- ground -->
+      <rect x="0" y="190" width="420" height="50" fill="#2F5734"/>
+      <rect x="0" y="190" width="420" height="4" fill="#3C6B44"/>
+      <!-- Sun -->
+      <circle id="sunGlow" cx="210" cy="44" r="34" fill="url(#sunGlow)"/>
+      <circle id="sun" cx="210" cy="44" r="17" fill="url(#sunG)"/>
+      <!-- compass -->
+      <text x="16" y="210" font-size="12" fill="#DCEBDD" font-family="Verdana,sans-serif">&#8592; east</text>
+      <text x="27" y="222" font-size="9" font-style="italic" fill="#BFD3C1" font-family="Verdana,sans-serif">(este)</text>
+      <text x="404" y="210" text-anchor="end" font-size="12" fill="#DCEBDD" font-family="Verdana,sans-serif">west &#8594;</text>
+      <text x="393" y="222" text-anchor="end" font-size="9" font-style="italic" fill="#BFD3C1" font-family="Verdana,sans-serif">(oeste)</text>
+    </svg>
+
+    <div class="readouts">
+      <div class="rd"><div class="lbl">Sun comes up<span class="es">(El Sol sale)</span></div><div class="val" id="riseOut"></div></div>
+      <div class="rd"><div class="lbl">Sun goes down<span class="es">(El Sol se pone)</span></div><div class="val" id="setOut"></div></div>
+      <div class="rd hot" id="hoursCard"><div class="lbl">Hours of daylight<span class="es">(Horas de luz)</span></div><div class="val" id="hoursOut"></div></div>
+    </div>
+
+    <div class="daybar"><div class="dayfill" id="dayFill"></div><span class="daylbl" id="dayLbl"></span></div>
+
+    <div class="btns">
+      <button id="btnSummer" class="key">☀ Summer<span class="es">(Verano)</span></button>
+      <button id="btnWinter">❄ Winter<span class="es">(Invierno)</span></button>
+      <button id="btnPlay">Play the day<span class="es">(Reproduce el día)</span></button>
+    </div>
+  </div>
+
+  <div class="rule">
+    <b>In summer your part of Earth is tilted toward the Sun.</b> The Sun takes a long, high path across the sky, so it is up more hours — longer days. In winter your part is tilted away, so the Sun's path is short and low — shorter days.
+    <span class="es">(En verano tu parte de la Tierra está inclinada hacia el Sol. El Sol toma un camino largo y alto por el cielo, así que está más horas: días más largos. En invierno tu parte está inclinada lejos, así que el camino del Sol es corto y bajo: días más cortos.)</span>
+  </div>
+
+  <div class="sec">
+    <div class="quizhead">
+      <h2>Now answer<span class="es">(Ahora responde)</span></h2>
+      <div class="score"><div class="stars-row" id="starsRow">☆☆☆</div><span id="scoreText"></span></div>
+    </div>
+    <div id="quiz"></div>
+    <div class="finale" id="finale">
+      <h2 id="finaleTitle"></h2>
+      <p id="finaleText"></p>
+      <div class="btns"><button id="btnAgain">Play again<span class="es">(Jugar otra vez)</span></button></div>
+    </div>
+  </div>
+
+  <details>
+    <summary>For teachers and families</summary>
+    <p><b>The big idea:</b> Earth's axis is tilted about 23.5°. In summer your hemisphere leans toward the Sun, so the Sun rises earlier, climbs higher, and sets later — a long, high path — giving more hours of daylight. In winter your hemisphere leans away, so the Sun rises later, stays low, and sets earlier — a short, low path — giving fewer hours of daylight. The tilt (not the distance to the Sun) is what changes day length and the seasons.</p>
+    <p><b>One simplification:</b> the exact sunrise/sunset times and path shape depend on your latitude; the game uses friendly, typical values (about 14 hours of daylight in summer and about 10 in winter).</p>
+  </details>
+
+</div>
+
+<script>
+"use strict";
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function setBi(el, en, es){
+    el.textContent = "";
+    el.appendChild(document.createTextNode(en));
+    if (es){ var s = document.createElement("span"); s.className = "es"; s.textContent = "(" + es + ")"; el.appendChild(s); }
+  }
+
+  var HORIZON = 190, MIDX = 210;
+  var SEASONS = {
+    summer: { riseX: 44,  setX: 376, cy: -102, rise: "6:00 a.m.", set: "8:00 p.m.", hours: 14,
+              riseEs: "6:00 a. m.", setEs: "8:00 p. m." },
+    winter: { riseX: 120, setX: 300, cy: 46,   rise: "7:00 a.m.", set: "5:00 p.m.", hours: 10,
+              riseEs: "7:00 a. m.", setEs: "5:00 p. m." }
+  };
+  var season = "summer", playing = false, rafId = null;
+
+  // Point on the season's arc (quadratic bezier), t: 0 = sunrise (east), 1 = sunset (west).
+  function sunAt(s, t){
+    var a = SEASONS[s], u = 1 - t;
+    return {
+      x: u*u*a.riseX + 2*u*t*MIDX + t*t*a.setX,
+      y: u*u*HORIZON + 2*u*t*a.cy + t*t*HORIZON
+    };
+  }
+  function placeSun(t){
+    var p = sunAt(season, t);
+    $("sun").setAttribute("cx", p.x.toFixed(1)); $("sun").setAttribute("cy", p.y.toFixed(1));
+    $("sunGlow").setAttribute("cx", p.x.toFixed(1)); $("sunGlow").setAttribute("cy", p.y.toFixed(1));
+  }
+
+  function render(){
+    var a = SEASONS[season];
+    // highlight the active arc
+    $("arcSummer").setAttribute("class", "arc" + (season === "summer" ? " active" : ""));
+    $("arcWinter").setAttribute("class", "arc" + (season === "winter" ? " active" : ""));
+    setBi($("riseOut"), a.rise, a.riseEs);
+    setBi($("setOut"), a.set, a.setEs);
+    setBi($("hoursOut"), a.hours + " hours", a.hours + " horas");
+    $("dayFill").style.width = (a.hours / 24 * 100) + "%";
+    setBi($("dayLbl"), a.hours + " hours of daylight", a.hours + " horas de luz");
+    $("btnSummer").className = season === "summer" ? "key" : "";
+    $("btnWinter").className = season === "winter" ? "key" : "";
+    placeSun(0.5);
+  }
+
+  function stopPlay(){ playing = false; if (rafId){ cancelAnimationFrame(rafId); rafId = null; } setBi($("btnPlay"), "Play the day", "Reproduce el día"); }
+  function setSeason(s){ stopPlay(); season = s; render(); }
+  $("btnSummer").addEventListener("click", function(){ setSeason("summer"); });
+  $("btnWinter").addEventListener("click", function(){ setSeason("winter"); });
+  $("btnPlay").addEventListener("click", function(){
+    if (playing){ stopPlay(); placeSun(0.5); return; }
+    if (reduceMotion){ placeSun(0.5); return; }
+    playing = true; setBi($("btnPlay"), "Pause", "Pausa");
+    var t0 = null;
+    function frame(ts){
+      if (!playing) return;
+      if (!t0) t0 = ts;
+      var t = Math.min(1, (ts - t0) / 4000);
+      placeSun(t);
+      if (t < 1) rafId = requestAnimationFrame(frame); else stopPlay();
+    }
+    rafId = requestAnimationFrame(frame);
+  });
+
+  /* quiz */
+  var QUESTIONS = [
+    {
+      text: "Why are the daytime hours longer in summer than in winter?",
+      es: "¿Por qué las horas de día son más largas en verano que en invierno?",
+      options: [
+        { text: "In summer your part of Earth is tilted toward the Sun, so the Sun is up longer.", es: "En verano tu parte de la Tierra está inclinada hacia el Sol, así que el Sol está más tiempo en el cielo.", ok: true,
+          fb: "Yes! Tilted toward the Sun, your side gets a long, high Sun path — more hours of daylight. That is summer.",
+          fbEs: "¡Sí! Inclinada hacia el Sol, tu lado tiene un camino del Sol largo y alto: más horas de luz. Eso es el verano." },
+        { text: "Because Earth moves closer to the Sun in summer.", es: "Porque la Tierra se acerca al Sol en verano.", ok: false,
+          fb: "It's the tilt, not the distance. Tilting toward the Sun makes the Sun's path long and high, giving longer days.",
+          fbEs: "Es la inclinación, no la distancia. Inclinarse hacia el Sol hace el camino del Sol largo y alto, dando días más largos." },
+        { text: "Because the Sun is bigger in summer.", es: "Porque el Sol es más grande en verano.", ok: false,
+          fb: "The Sun stays the same size. Longer summer days come from your side tilting toward the Sun.",
+          fbEs: "El Sol se mantiene del mismo tamaño. Los días largos del verano vienen de que tu lado se inclina hacia el Sol." },
+        { text: "Because Earth spins faster in summer.", es: "Porque la Tierra gira más rápido en verano.", ok: false,
+          fb: "Earth spins at the same speed all year (about 24 hours). The tilt changes how long the Sun is up.",
+          fbEs: "La Tierra gira a la misma velocidad todo el año (unas 24 horas). La inclinación cambia cuánto tiempo está el Sol en el cielo." }
+      ]
+    },
+    {
+      text: "In winter, the Sun takes a ___ path across the sky, so there is ___ daylight.",
+      es: "En invierno, el Sol toma un camino ___ por el cielo, así que hay ___ luz de día.",
+      options: [
+        { text: "a short, low path; less", es: "un camino corto y bajo; menos", ok: true,
+          fb: "Right. In winter your side tilts away from the Sun, so the Sun stays low and is up for fewer hours — less daylight.",
+          fbEs: "Correcto. En invierno tu lado se inclina lejos del Sol, así que el Sol se queda bajo y está menos horas: menos luz de día." },
+        { text: "a long, high path; more", es: "un camino largo y alto; más", ok: false,
+          fb: "That's summer. In winter the Sun's path is short and low, so there is less daylight.",
+          fbEs: "Eso es el verano. En invierno el camino del Sol es corto y bajo, así que hay menos luz de día." },
+        { text: "a long, high path; less", es: "un camino largo y alto; menos", ok: false,
+          fb: "A long, high path means MORE daylight (summer). Winter has a short, low path with less daylight.",
+          fbEs: "Un camino largo y alto significa MÁS luz (verano). El invierno tiene un camino corto y bajo con menos luz." },
+        { text: "the same path all year", es: "el mismo camino todo el año", ok: false,
+          fb: "The Sun's path changes with the seasons. In winter it is short and low; in summer it is long and high.",
+          fbEs: "El camino del Sol cambia con las estaciones. En invierno es corto y bajo; en verano es largo y alto." }
+      ]
+    },
+    {
+      text: "A town has about 14 hours of daylight. Which season is it MOST LIKELY?",
+      es: "Un pueblo tiene unas 14 horas de luz. ¿Qué estación es MÁS PROBABLE?",
+      options: [
+        { text: "Summer", es: "Verano", ok: true,
+          fb: "Yes. Long daylight (about 14 hours) happens in summer, when your side is tilted toward the Sun.",
+          fbEs: "Sí. La luz larga (unas 14 horas) ocurre en verano, cuando tu lado está inclinado hacia el Sol." },
+        { text: "Winter", es: "Invierno", ok: false,
+          fb: "Winter has short days (about 10 hours). 14 hours of daylight is a long day — summer.",
+          fbEs: "El invierno tiene días cortos (unas 10 horas). 14 horas de luz es un día largo: verano." },
+        { text: "You cannot tell from daylight hours", es: "No se puede saber por las horas de luz", ok: false,
+          fb: "You can! Long daylight = summer, short daylight = winter. 14 hours is long — summer.",
+          fbEs: "¡Sí se puede! Luz larga = verano, luz corta = invierno. 14 horas es largo: verano." }
+      ]
+    }
+  ];
+
+  var LETTERS = ["A","B","C","D"];
+  var firstTry = new Array(QUESTIONS.length).fill(null);
+  function buildQuiz(){
+    var box = $("quiz"); box.innerHTML = "";
+    firstTry = new Array(QUESTIONS.length).fill(null);
+    $("finale").className = "finale";
+    QUESTIONS.forEach(function(q, qi){
+      var card = document.createElement("div"); card.className = "q";
+      var top = document.createElement("div"); top.className = "qtop";
+      var num = document.createElement("span"); num.className = "qnum"; num.textContent = String(qi + 1);
+      var qt = document.createElement("div"); qt.className = "qtext"; setBi(qt, q.text, q.es);
+      top.appendChild(num); top.appendChild(qt); card.appendChild(top);
+      var opts = document.createElement("div"); opts.className = "opts";
+      q.options.forEach(function(opt, oi){
+        var b = document.createElement("button"); b.className = "opt";
+        b.innerHTML = '<span class="ltr">' + LETTERS[oi] + '</span><span class="txt"></span>';
+        setBi(b.querySelector(".txt"), opt.text, opt.es);
+        b.addEventListener("click", function(){ answer(qi, oi, card, b); });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+      var fb = document.createElement("div"); fb.className = "fb"; fb.style.display = "none"; card.appendChild(fb);
+      box.appendChild(card);
+    });
+    updateScore();
+  }
+  function answer(qi, oi, card, btn){
+    var opt = QUESTIONS[qi].options[oi];
+    if (btn.disabled) return;
+    if (firstTry[qi] === null) firstTry[qi] = opt.ok;
+    var fb = card.querySelector(".fb"); fb.style.display = "block"; fb.innerHTML = "";
+    var head = document.createElement("b"), body = document.createElement("span");
+    if (opt.ok){
+      btn.className = "opt right";
+      var all = card.querySelectorAll(".opt"); for (var i = 0; i < all.length; i++) all[i].disabled = true;
+      fb.className = "fb right";
+      if (firstTry[qi]) setBi(head, "Correct! ", "¡Correcto!"); else setBi(head, "Yes, that's the one. ", "Sí, esa es.");
+    } else {
+      btn.className = "opt wrong"; btn.disabled = true; fb.className = "fb rethink";
+      setBi(head, "Not that one. ", "Esa no.");
+    }
+    setBi(body, opt.fb, opt.fbEs);
+    fb.appendChild(head); fb.appendChild(body);
+    if (!opt.ok){ var tail = document.createElement("div"); tail.style.marginTop = "8px"; setBi(tail, "Try again.", "Intenta otra vez."); fb.appendChild(tail); }
+    updateScore();
+  }
+  function updateScore(){
+    var right = firstTry.filter(function(v){ return v === true; }).length, row = "";
+    for (var i = 0; i < QUESTIONS.length; i++) row += firstTry[i] === true ? "★" : "☆";
+    $("starsRow").textContent = row;
+    setBi($("scoreText"), right + " of " + QUESTIONS.length + " right", right + " de " + QUESTIONS.length + " correctas");
+    var solved = 0, cards = $("quiz").querySelectorAll(".q");
+    for (var c = 0; c < cards.length; c++) if (cards[c].querySelector(".opt.right")) solved++;
+    if (solved === QUESTIONS.length){
+      $("finale").className = "finale show";
+      setBi($("finaleTitle"), "You got it: Sun Path Scientist!", "¡Lo lograste: Científico del camino del Sol!");
+      setBi($("finaleText"),
+        "In summer your part of Earth tilts toward the Sun, so the Sun takes a long, high path and days are long. In winter it tilts away, so the Sun takes a short, low path and days are short.",
+        "En verano tu parte de la Tierra se inclina hacia el Sol, así que el Sol toma un camino largo y alto y los días son largos. En invierno se inclina lejos, así que el Sol toma un camino corto y bajo y los días son cortos.");
+    }
+  }
+  $("btnAgain").addEventListener("click", function(){ buildQuiz(); $("quiz").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); });
+
+  /* start */
+  render();
+  buildQuiz();
+})();
+</script>
+<style>
+  .arc{stroke:#7C8CC6;stroke-width:2;stroke-dasharray:4 5;opacity:.4}
+  .arc.active{stroke:#FFC24B;stroke-width:3;stroke-dasharray:none;opacity:.95}
+</style>
+</body>
+</html>
