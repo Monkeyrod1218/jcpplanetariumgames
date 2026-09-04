@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moon Phases — Calendar Drag</title>
+<style>
+  :root{
+    --ink:#0B1230;--panel:#16204A;--panel2:#1D2A5C;--line:#31407A;
+    --text:#EAF0FF;--dim:#A5B3DC;--sun:#FFC24B;--sun-soft:#FFE9AE;
+    --good:#57D3A2;--think:#FFD37A;--pin:#FF6A4D;--radius:16px;
+    --display:"Trebuchet MS","Lucida Grande",Tahoma,sans-serif;
+    --body:Verdana,Geneva,"DejaVu Sans",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:22px 20px 70px}
+
+  h1{font-family:var(--display);font-size:clamp(24px,5vw,34px);line-height:1.08;letter-spacing:-.5px;margin:0 0 8px;font-weight:700;text-align:center}
+  h2{font-family:var(--display);font-size:19px;margin:0 0 2px}
+  .lead{color:var(--dim);text-align:center;margin:0 auto 4px;max-width:52ch;font-size:14px}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:16px}
+
+  .playarea{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+  .tray{display:flex;flex-direction:column;gap:10px;flex:0 0 132px}
+  .traylbl{font-size:12px;color:var(--dim);text-align:center}
+  .piece{display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:12px;padding:9px;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}
+  .piece:active{cursor:grabbing}
+  .piece.done{opacity:.32;cursor:default}
+  .piece .pname{font-family:var(--display);font-weight:700;font-size:12.5px;text-align:center;line-height:1.2}
+  .piece .pname .es{font-size:.82em}
+  .moonsvg{display:block}
+  .piece .moonsvg{width:48px;height:48px}
+
+  .calwrap{flex:1;min-width:290px}
+  .calhead{font-family:var(--display);font-weight:700;text-align:center;letter-spacing:1px;margin-bottom:6px}
+  .calhead .es{font-size:.7em;color:var(--dim);font-weight:normal;font-style:italic}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;background:#0b1430;border:1px solid var(--line);border-radius:10px;padding:5px}
+  .dow{font-size:10.5px;color:var(--dim);text-align:center;padding:2px 0;font-family:var(--display)}
+  .cell{position:relative;background:#0f1a3d;border:1px solid #26356a;border-radius:6px;min-height:50px}
+  .cell.empty{background:transparent;border:none}
+  .cell.hover{outline:2px dashed var(--think);outline-offset:-1px}
+  .cell.placed{border-color:var(--good)}
+  .dnum{position:absolute;top:1px;right:4px;font-size:10.5px;color:#9fb0e4}
+  .slot{position:absolute;left:0;right:0;bottom:2px;top:14px;display:grid;place-items:center}
+  .slot .moonsvg{width:32px;height:32px}
+
+  .hint{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:13.5px;line-height:1.5;border:1px solid var(--line);background:#111B42}
+  .hint.ok{border-color:rgba(87,211,162,.5);background:rgba(87,211,162,.10)}
+  .hint.no{border-color:rgba(255,211,122,.5);background:rgba(255,211,122,.09)}
+  .hint b{color:var(--think)}
+
+  #ghost{position:fixed;width:52px;height:52px;pointer-events:none;z-index:9999;margin:-26px 0 0 -26px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));display:none}
+
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  button{font-family:var(--body);font-size:14px;color:var(--text);background:#243468;border:1px solid var(--line);
+    border-radius:12px;padding:0 16px;min-height:46px;cursor:pointer;touch-action:manipulation}
+  button:hover{background:#2E3F7C}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--think);outline-offset:2px}
+  button.key{background:var(--sun);color:#231602;border-color:#E0A62F;font-weight:bold}
+
+  .rule{margin-top:16px;border:1px solid rgba(255,211,122,.5);background:rgba(255,211,122,.09);border-radius:var(--radius);padding:14px 16px;font-size:14.5px;text-align:center}
+  .rule b{color:var(--think)}
+
+  .quizhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:2px}
+  .score{font-size:13px;color:var(--dim)}
+  .stars-row{letter-spacing:3px;font-size:17px}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:12px}
+  .qnum{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);
+    font-family:var(--display);font-weight:700;font-size:14px;margin-right:9px;flex:none}
+  .qtop{display:flex;align-items:flex-start}
+  .qtext{font-size:15px;line-height:1.5}
+  .opts{display:grid;gap:8px;margin-top:12px}
+  .opt{text-align:left;display:flex;gap:10px;align-items:flex-start;width:100%;padding:11px 13px;font-size:14px;line-height:1.45;background:var(--panel2);border-radius:12px}
+  .opt .ltr{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;background:#111C44}
+  .opt:disabled{cursor:default;opacity:1}
+  .opt.right{background:rgba(87,211,162,.16);border-color:var(--good)}
+  .opt.right .ltr{background:var(--good);color:#08321F;border-color:var(--good)}
+  .opt.wrong{background:rgba(255,106,77,.12);border-color:rgba(255,106,77,.6)}
+  .opt.wrong .txt{text-decoration:line-through;color:var(--dim)}
+  .fb{margin-top:11px;padding:12px 14px;border-radius:12px;font-size:13.5px;line-height:1.55;border:1px solid var(--line);background:#111B42}
+  .fb.right{border-color:rgba(87,211,162,.5);background:rgba(87,211,162,.10)}
+  .fb.rethink{border-color:rgba(255,211,122,.5);background:rgba(255,211,122,.09)}
+  .fb b{font-family:var(--display);font-size:14.5px}
+  .finale{margin-top:16px;border-radius:var(--radius);padding:20px;border:1px solid var(--sun);background:linear-gradient(160deg,#20305F,#161F45);display:none}
+  .finale.show{display:block}
+  .finale h2{color:var(--sun)}
+
+  details{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:13px;color:var(--dim)}
+  summary{cursor:pointer;color:var(--text);font-family:var(--display);font-size:15px}
+  details b{color:var(--text)}
+  .sec{margin-top:24px}
+
+  .backbar{padding:14px 0 6px 16px}
+  .backlink{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-size:14px;font-weight:bold;
+    color:var(--text);text-decoration:none;background:#243468;border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-height:44px}
+  .backlink:hover{background:#2E3F7C;border-color:var(--sun)}
+
+  .es{display:block;font-style:italic;font-weight:normal;font-size:.82em;line-height:1.35;color:var(--dim);margin-top:2px}
+  h1 .es{font-size:.5em;color:var(--think);margin-top:6px}
+  .btns button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.18;min-height:52px;padding-top:8px;padding-bottom:8px}
+  .btns button .es{font-size:.8em}
+  .backlink .es{width:100%;text-align:left;font-size:.8em;margin-top:1px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="backbar">
+  <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
+</div>
+
+<div id="ghost"></div>
+
+<div class="wrap">
+
+  <h1>Moon Phases<span class="es">(Fases de la Luna)</span></h1>
+  <p class="lead">Drag each moon to the day you think it happens. The new moon is on January 1.<span class="es">(Arrastra cada luna al día en que crees que ocurre. La luna nueva es el 1 de enero.)</span></p>
+
+  <div class="panel">
+    <div class="playarea">
+      <div>
+        <div class="traylbl">Drag these &#8594;<span class="es">(Arrastra estas)</span></div>
+        <div class="tray" id="tray"></div>
+      </div>
+      <div class="calwrap">
+        <div class="calhead">JANUARY<span class="es">(enero)</span></div>
+        <div class="cal" id="cal"></div>
+      </div>
+    </div>
+    <div class="hint" id="hint"></div>
+    <div class="btns"><button id="btnReset">Start over<span class="es">(Empezar de nuevo)</span></button></div>
+  </div>
+
+  <div class="rule">
+    <b>From one new moon to the next is about 29.5 days.</b> The full moon is about halfway (about 15 days). The quarter moons are halfway between a new moon and a full moon.
+    <span class="es">(De una luna nueva a la siguiente hay unos 29.5 días. La luna llena está a la mitad (unos 15 días). Los cuartos están a la mitad entre una luna nueva y una luna llena.)</span>
+  </div>
+
+  <div class="sec" id="quizsec" hidden>
+    <div class="quizhead">
+      <h2>Now answer<span class="es">(Ahora responde)</span></h2>
+      <div class="score"><div class="stars-row" id="starsRow">☆☆</div><span id="scoreText"></span></div>
+    </div>
+    <div id="quiz"></div>
+    <div class="finale" id="finale">
+      <h2 id="finaleTitle"></h2>
+      <p id="finaleText"></p>
+      <div class="btns"><button id="btnAgain">Play the questions again<span class="es">(Juega las preguntas otra vez)</span></button></div>
+    </div>
+  </div>
+
+  <details>
+    <summary>For teachers and families</summary>
+    <p><b>The big idea:</b> the Moon shows a repeating pattern of phases about every 29.5 days (one lunar month). Starting from a new moon: first quarter is about 7–8 days later, the full moon about 15 days later (halfway), the third quarter about 22 days later, and the next new moon about 29–30 days later. If a new moon is on January 1, the next is near January 30, and the one after is near February 28 — which is how you predict a new moon in a later month.</p>
+    <p><b>Phase pictures (Northern Hemisphere):</b> first quarter is lit on the right half; the full moon is fully lit; third quarter is lit on the left half; the new moon looks dark.</p>
+  </details>
+
+</div>
+
+<script>
+"use strict";
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function setBi(el, en, es){
+    el.textContent = "";
+    el.appendChild(document.createTextNode(en));
+    if (es){ var s = document.createElement("span"); s.className = "es"; s.textContent = "(" + es + ")"; el.appendChild(s); }
+  }
+
+  /* ---------- moon phase graphics ---------- */
+  function moonSVG(phase){
+    var lit = "#E6ECF8", dark = "#0D1430", rim = "#6E7DB8";
+    var body = '<circle cx="50" cy="50" r="46" fill="' + dark + '"/>';
+    if (phase === "full"){
+      body = '<circle cx="50" cy="50" r="46" fill="' + lit + '"/>' +
+             '<circle cx="38" cy="40" r="6" fill="#C9D3E8"/><circle cx="61" cy="58" r="8" fill="#C9D3E8"/><circle cx="56" cy="30" r="4" fill="#C9D3E8"/>';
+    } else if (phase === "first"){
+      body += '<path d="M50 4 A46 46 0 0 1 50 96 Z" fill="' + lit + '"/>';   // right half lit
+    } else if (phase === "third"){
+      body += '<path d="M50 4 A46 46 0 0 0 50 96 Z" fill="' + lit + '"/>';   // left half lit
+    }
+    return '<svg class="moonsvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' + body +
+           '<circle cx="50" cy="50" r="46" fill="none" stroke="' + rim + '" stroke-width="1.5"/></svg>';
+  }
+
+  var PHASES = [
+    { key: "first", en: "First quarter", es: "Cuarto creciente", target: 8 },
+    { key: "full",  en: "Full moon",     es: "Luna llena",       target: 16 },
+    { key: "third", en: "Third quarter", es: "Cuarto menguante", target: 23 },
+    { key: "new",   en: "New moon",      es: "Luna nueva",       target: 30 }
+  ];
+  var HINTS = {
+    first: { en: "First quarter is halfway between the new moon and the full moon — about 7 to 8 days after January 1.",
+             es: "El cuarto creciente está a la mitad entre la luna nueva y la luna llena: unos 7 u 8 días después del 1 de enero." },
+    full:  { en: "The full moon is halfway from new moon to new moon — about 15 days after January 1.",
+             es: "La luna llena está a la mitad de luna nueva a luna nueva: unos 15 días después del 1 de enero." },
+    third: { en: "Third quarter is halfway between the full moon and the next new moon — about 22 to 23 days after January 1.",
+             es: "El cuarto menguante está a la mitad entre la luna llena y la siguiente luna nueva: unos 22 o 23 días después del 1 de enero." },
+    "new": { en: "The next new moon is about 29 to 30 days after January 1 — near the end of January.",
+             es: "La siguiente luna nueva es unos 29 o 30 días después del 1 de enero: cerca del final de enero." }
+  };
+
+  /* ---------- build the calendar ---------- */
+  var LEAD_BLANKS = 1, DAYS = 31;   // Jan 1 is a Tuesday (Mon..Sun header)
+  function buildCalendar(){
+    var cal = $("cal");
+    cal.innerHTML = "";
+    ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].forEach(function(d){
+      var h = document.createElement("div"); h.className = "dow"; h.textContent = d; cal.appendChild(h);
+    });
+    for (var i = 0; i < 35; i++){
+      var day = i - LEAD_BLANKS + 1;
+      var cell = document.createElement("div");
+      if (day < 1 || day > DAYS){ cell.className = "cell empty"; cal.appendChild(cell); continue; }
+      cell.className = "cell";
+      cell.setAttribute("data-date", String(day));
+      var num = document.createElement("span"); num.className = "dnum"; num.textContent = String(day);
+      var slot = document.createElement("span"); slot.className = "slot";
+      cell.appendChild(num); cell.appendChild(slot);
+      cal.appendChild(cell);
+    }
+    // Jan 1 is the new moon (already placed)
+    var c1 = cal.querySelector('.cell[data-date="1"]');
+    c1.classList.add("placed");
+    c1.querySelector(".slot").innerHTML = moonSVG("new");
+  }
+
+  /* ---------- build the tray ---------- */
+  var placedCount = 0;
+  function buildTray(){
+    var tray = $("tray"); tray.innerHTML = ""; placedCount = 0;
+    PHASES.forEach(function(ph){
+      var piece = document.createElement("div");
+      piece.className = "piece"; piece.setAttribute("data-key", ph.key); piece.setAttribute("data-target", ph.target);
+      piece.innerHTML = moonSVG(ph.key);
+      var name = document.createElement("div"); name.className = "pname"; setBi(name, ph.en, ph.es);
+      piece.appendChild(name);
+      piece.addEventListener("pointerdown", startDrag);
+      tray.appendChild(piece);
+    });
+    setBi($("hint"), "Drag each moon to the day you think it happens. Tip: new moon to new moon is about 29.5 days, and the full moon is halfway.",
+      "Arrastra cada luna al día en que crees que ocurre. Consejo: de luna nueva a luna nueva hay unos 29.5 días, y la luna llena está a la mitad.");
+    $("hint").className = "hint";
+  }
+
+  /* ---------- drag and drop ---------- */
+  var drag = null;
+  function startDrag(e){
+    var piece = e.currentTarget;
+    if (piece.classList.contains("done")) return;
+    drag = piece;
+    var g = $("ghost");
+    g.innerHTML = piece.querySelector(".moonsvg").outerHTML;
+    g.style.display = "block";
+    moveGhost(e);
+    if (piece.setPointerCapture) piece.setPointerCapture(e.pointerId);
+    piece.addEventListener("pointermove", onMove);
+    piece.addEventListener("pointerup", onUp);
+    piece.addEventListener("pointercancel", onUp);
+    e.preventDefault();
+  }
+  function moveGhost(e){ var g = $("ghost"); g.style.left = e.clientX + "px"; g.style.top = e.clientY + "px"; }
+  function cellUnder(e){
+    var g = $("ghost"); g.style.display = "none";
+    var el = document.elementFromPoint(e.clientX, e.clientY);
+    g.style.display = "block";
+    while (el && !(el.classList && el.classList.contains("cell"))) el = el.parentElement;
+    return (el && el.getAttribute && el.getAttribute("data-date")) ? el : null;
+  }
+  function clearHover(){ var h = document.querySelector(".cell.hover"); if (h) h.classList.remove("hover"); }
+  function onMove(e){
+    if (!drag) return;
+    moveGhost(e);
+    clearHover();
+    var cell = cellUnder(e);
+    if (cell && !cell.classList.contains("placed")) cell.classList.add("hover");
+  }
+  function onUp(e){
+    if (!drag) return;
+    var piece = drag, g = $("ghost");
+    var cell = cellUnder(e);
+    g.style.display = "none";   // hide AFTER hit-testing (cellUnder toggles it)
+    clearHover();
+    piece.removeEventListener("pointermove", onMove);
+    piece.removeEventListener("pointerup", onUp);
+    piece.removeEventListener("pointercancel", onUp);
+    drag = null;
+
+    if (!cell){ return; }   // dropped off the calendar — no penalty
+    var date = parseInt(cell.getAttribute("data-date"), 10);
+    var target = parseInt(piece.getAttribute("data-target"), 10);
+    var key = piece.getAttribute("data-key");
+    if (!cell.classList.contains("placed") && Math.abs(date - target) <= 1){
+      // correct
+      cell.classList.add("placed");
+      cell.querySelector(".slot").innerHTML = moonSVG(key);
+      piece.classList.add("done");
+      placedCount++;
+      var ph = PHASES.filter(function(p){ return p.key === key; })[0];
+      if (placedCount >= PHASES.length){
+        setBi($("hint"), "You placed them all! Now answer the two questions below.",
+          "¡Las colocaste todas! Ahora responde las dos preguntas de abajo.");
+        $("hint").className = "hint ok";
+        $("quizsec").hidden = false;
+        $("quizsec").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      } else {
+        setBi($("hint"), "Great — the " + ph.en + " goes there! Keep going.",
+          "¡Bien, la " + ph.es.toLowerCase() + " va ahí! Sigue así.");
+        $("hint").className = "hint ok";
+      }
+    } else {
+      // wrong — teach
+      var hh = HINTS[key];
+      setBi($("hint"), "Not quite. " + hh.en, hh.es);
+      $("hint").className = "hint no";
+    }
+  }
+  $("btnReset").addEventListener("click", function(){ buildCalendar(); buildTray(); });
+
+  /* ---------- quiz ---------- */
+  var QUESTIONS = [
+    {
+      text: "Halfway from one new moon to the next — about 15 days after the new moon — which phase does the Moon show?",
+      es: "A la mitad de una luna nueva a la siguiente, unos 15 días después de la luna nueva, ¿qué fase muestra la Luna?",
+      options: [
+        { text: "Full moon", es: "Luna llena", ok: true,
+          fb: "Yes! Halfway from new moon to new moon (about 15 days) is the full moon.",
+          fbEs: "¡Sí! A la mitad de luna nueva a luna nueva (unos 15 días) está la luna llena." },
+        { text: "First quarter", es: "Cuarto creciente", ok: false,
+          fb: "First quarter is only about a quarter of the way (about 7 to 8 days). Halfway is the full moon.",
+          fbEs: "El cuarto creciente es solo como un cuarto del camino (unos 7 u 8 días). A la mitad está la luna llena." },
+        { text: "New moon", es: "Luna nueva", ok: false,
+          fb: "The new moon is the start and end of the cycle, not the middle. The middle is the full moon.",
+          fbEs: "La luna nueva es el inicio y el final del ciclo, no la mitad. La mitad es la luna llena." },
+        { text: "Third quarter", es: "Cuarto menguante", ok: false,
+          fb: "Third quarter comes later, about 22 days in. Halfway (about 15 days) is the full moon.",
+          fbEs: "El cuarto menguante llega después, como al día 22. A la mitad (unos 15 días) está la luna llena." }
+      ]
+    },
+    {
+      text: "New moons are about 29.5 days apart. A new moon is on January 30. On about which day in February will the next new moon MOST LIKELY be?",
+      es: "Las lunas nuevas están separadas unos 29.5 días. Hay una luna nueva el 30 de enero. ¿En qué día de febrero ocurrirá MÁS PROBABLEMENTE la siguiente luna nueva?",
+      options: [
+        { text: "About February 28", es: "Alrededor del 28 de febrero", ok: true,
+          fb: "Right! About 29 to 30 days after January 30 lands near the end of February — about February 28.",
+          fbEs: "¡Correcto! Unos 29 o 30 días después del 30 de enero caen cerca del final de febrero: alrededor del 28 de febrero." },
+        { text: "About February 1", es: "Alrededor del 1 de febrero", ok: false,
+          fb: "That's only a day or two later. The next new moon is a whole cycle — about 29 to 30 days — after January 30.",
+          fbEs: "Eso es solo uno o dos días después. La siguiente luna nueva es todo un ciclo, unos 29 o 30 días, después del 30 de enero." },
+        { text: "About February 14", es: "Alrededor del 14 de febrero", ok: false,
+          fb: "About 15 days after January 30 would be the full moon, not the new moon. The new moon is about 29 to 30 days later.",
+          fbEs: "Unos 15 días después del 30 de enero sería la luna llena, no la luna nueva. La luna nueva es unos 29 o 30 días después." },
+        { text: "There is no new moon in February", es: "No hay luna nueva en febrero", ok: false,
+          fb: "There is one — count about 29 to 30 days from January 30 and you land near February 28.",
+          fbEs: "Sí hay una: cuenta unos 29 o 30 días desde el 30 de enero y llegas cerca del 28 de febrero." }
+      ]
+    }
+  ];
+
+  var LETTERS = ["A","B","C","D"];
+  var firstTry = new Array(QUESTIONS.length).fill(null);
+  function buildQuiz(){
+    var box = $("quiz"); box.innerHTML = "";
+    firstTry = new Array(QUESTIONS.length).fill(null);
+    $("finale").className = "finale";
+    QUESTIONS.forEach(function(q, qi){
+      var card = document.createElement("div"); card.className = "q";
+      var top = document.createElement("div"); top.className = "qtop";
+      var num = document.createElement("span"); num.className = "qnum"; num.textContent = String(qi + 1);
+      var qt = document.createElement("div"); qt.className = "qtext"; setBi(qt, q.text, q.es);
+      top.appendChild(num); top.appendChild(qt); card.appendChild(top);
+      var opts = document.createElement("div"); opts.className = "opts";
+      q.options.forEach(function(opt, oi){
+        var b = document.createElement("button"); b.className = "opt";
+        b.innerHTML = '<span class="ltr">' + LETTERS[oi] + '</span><span class="txt"></span>';
+        setBi(b.querySelector(".txt"), opt.text, opt.es);
+        b.addEventListener("click", function(){ answer(qi, oi, card, b); });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+      var fb = document.createElement("div"); fb.className = "fb"; fb.style.display = "none"; card.appendChild(fb);
+      box.appendChild(card);
+    });
+    updateScore();
+  }
+  function answer(qi, oi, card, btn){
+    var opt = QUESTIONS[qi].options[oi];
+    if (btn.disabled) return;
+    if (firstTry[qi] === null) firstTry[qi] = opt.ok;
+    var fb = card.querySelector(".fb"); fb.style.display = "block"; fb.innerHTML = "";
+    var head = document.createElement("b"), body = document.createElement("span");
+    if (opt.ok){
+      btn.className = "opt right";
+      var all = card.querySelectorAll(".opt"); for (var i = 0; i < all.length; i++) all[i].disabled = true;
+      fb.className = "fb right";
+      if (firstTry[qi]) setBi(head, "Correct! ", "¡Correcto!"); else setBi(head, "Yes, that's the one. ", "Sí, esa es.");
+    } else {
+      btn.className = "opt wrong"; btn.disabled = true; fb.className = "fb rethink";
+      setBi(head, "Not that one. ", "Esa no.");
+    }
+    setBi(body, opt.fb, opt.fbEs);
+    fb.appendChild(head); fb.appendChild(body);
+    if (!opt.ok){ var tail = document.createElement("div"); tail.style.marginTop = "8px"; setBi(tail, "Try again.", "Intenta otra vez."); fb.appendChild(tail); }
+    updateScore();
+  }
+  function updateScore(){
+    var right = firstTry.filter(function(v){ return v === true; }).length, row = "";
+    for (var i = 0; i < QUESTIONS.length; i++) row += firstTry[i] === true ? "★" : "☆";
+    $("starsRow").textContent = row;
+    setBi($("scoreText"), right + " of " + QUESTIONS.length + " right", right + " de " + QUESTIONS.length + " correctas");
+    var solved = 0, cards = $("quiz").querySelectorAll(".q");
+    for (var c = 0; c < cards.length; c++) if (cards[c].querySelector(".opt.right")) solved++;
+    if (solved === QUESTIONS.length){
+      $("finale").className = "finale show";
+      setBi($("finaleTitle"), "You got it: Moon Phase Tracker!", "¡Lo lograste: Rastreador de Fases de la Luna!");
+      setBi($("finaleText"),
+        "The Moon repeats its phases about every 29.5 days. From a new moon: first quarter (~7 days), full moon (~15 days, halfway), third quarter (~22 days), then the next new moon (~30 days). That pattern lets you predict a new moon in the next month.",
+        "La Luna repite sus fases cada 29.5 días aproximadamente. Desde una luna nueva: cuarto creciente (~7 días), luna llena (~15 días, a la mitad), cuarto menguante (~22 días) y luego la siguiente luna nueva (~30 días). Ese patrón te deja predecir una luna nueva del mes siguiente.");
+    }
+  }
+  $("btnAgain").addEventListener("click", function(){ buildQuiz(); $("quiz").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); });
+
+  /* start */
+  buildCalendar();
+  buildTray();
+  buildQuiz();
+})();
+</script>
+</body>
+</html>
