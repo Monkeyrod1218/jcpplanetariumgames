@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One Day, One Year — Spin vs. Trip</title>
+<style>
+  :root{
+    --ink:#0B1230;--panel:#16204A;--panel2:#1D2A5C;--line:#31407A;
+    --text:#EAF0FF;--dim:#A5B3DC;--sun:#FFC24B;--sun-soft:#FFE9AE;
+    --good:#57D3A2;--think:#FFD37A;--radius:16px;
+    --display:"Trebuchet MS","Lucida Grande",Tahoma,sans-serif;
+    --body:Verdana,Geneva,"DejaVu Sans",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:22px 20px 70px}
+
+  h1{font-family:var(--display);font-size:clamp(24px,5vw,34px);line-height:1.08;letter-spacing:-.5px;margin:0 0 8px;font-weight:700;text-align:center}
+  h2{font-family:var(--display);font-size:19px;margin:0 0 2px}
+  .lead{color:var(--dim);text-align:center;margin:0 auto 4px;max-width:48ch;font-size:14px}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px}
+  .panel svg{display:block;width:100%;height:auto;border-radius:12px}
+  .result{font-size:14.5px;line-height:1.5;margin-top:12px;min-height:2.6em}
+  .result b{color:var(--think)}
+
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  button{font-family:var(--body);font-size:14px;color:var(--text);background:#243468;border:1px solid var(--line);
+    border-radius:12px;padding:0 16px;min-height:46px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,194,75,.22)}
+  button:hover{background:#2E3F7C}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--think);outline-offset:2px}
+  button.key{background:var(--sun);color:#231602;border-color:#E0A62F;font-weight:bold}
+  button.key:hover{background:#FFD068}
+
+  .rule{margin-top:16px;border:1px solid rgba(255,211,122,.5);background:rgba(255,211,122,.09);border-radius:var(--radius);padding:14px 16px;font-size:14.5px;text-align:center}
+  .rule b{color:var(--think)}
+
+  .quizhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:2px}
+  .score{font-size:13px;color:var(--dim)}
+  .stars-row{letter-spacing:3px;font-size:17px}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:12px}
+  .qnum{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);
+    font-family:var(--display);font-weight:700;font-size:14px;margin-right:9px;flex:none}
+  .qtop{display:flex;align-items:flex-start}
+  .qtext{font-size:15px;line-height:1.5}
+  .opts{display:grid;gap:8px;margin-top:12px}
+  .opt{text-align:left;display:flex;gap:10px;align-items:flex-start;width:100%;padding:11px 13px;font-size:14px;line-height:1.45;background:var(--panel2);border-radius:12px}
+  .opt .ltr{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;background:#111C44}
+  .opt:disabled{cursor:default;opacity:1}
+  .opt.right{background:rgba(87,211,162,.16);border-color:var(--good)}
+  .opt.right .ltr{background:var(--good);color:#08321F;border-color:var(--good)}
+  .opt.wrong{background:rgba(255,106,77,.12);border-color:rgba(255,106,77,.6)}
+  .opt.wrong .txt{text-decoration:line-through;color:var(--dim)}
+  .fb{margin-top:11px;padding:12px 14px;border-radius:12px;font-size:13.5px;line-height:1.55;border:1px solid var(--line);background:#111B42}
+  .fb.right{border-color:rgba(87,211,162,.5);background:rgba(87,211,162,.10)}
+  .fb.rethink{border-color:rgba(255,211,122,.5);background:rgba(255,211,122,.09)}
+  .fb b{font-family:var(--display);font-size:14.5px}
+  .finale{margin-top:16px;border-radius:var(--radius);padding:20px;border:1px solid var(--sun);background:linear-gradient(160deg,#20305F,#161F45);display:none}
+  .finale.show{display:block}
+  .finale h2{color:var(--sun)}
+
+  details{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:13px;color:var(--dim)}
+  summary{cursor:pointer;color:var(--text);font-family:var(--display);font-size:15px}
+  details b{color:var(--text)}
+  .sec{margin-top:24px}
+
+  .backbar{padding:14px 0 6px 16px}
+  .backlink{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-size:14px;font-weight:bold;
+    color:var(--text);text-decoration:none;background:#243468;border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-height:44px}
+  .backlink:hover{background:#2E3F7C;border-color:var(--sun)}
+
+  .es{display:block;font-style:italic;font-weight:normal;font-size:.82em;line-height:1.35;color:var(--dim);margin-top:2px}
+  h1 .es{font-size:.5em;color:var(--think);margin-top:6px}
+  .btns button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.18;min-height:52px;padding-top:8px;padding-bottom:8px}
+  .btns button .es{font-size:.8em}
+  .backlink .es{width:100%;text-align:left;font-size:.8em;margin-top:1px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="backbar">
+  <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
+</div>
+
+<div class="wrap">
+
+  <h1>One Day, One Year<span class="es">(Un día, un año)</span></h1>
+  <p class="lead">Earth has two motions. See how a spin and a trip around the Sun are different.<span class="es">(La Tierra tiene dos movimientos. Mira en qué se diferencian un giro y un viaje alrededor del Sol.)</span></p>
+
+  <div class="panel" id="lab">
+    <svg viewBox="0 0 420 300" role="img" aria-label="The Sun in the center with Earth that can spin in place or travel around the Sun">
+      <defs>
+        <radialGradient id="sunGrad" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#FFF3C9"/><stop offset="55%" stop-color="#FFC24B"/><stop offset="100%" stop-color="#F59B20"/>
+        </radialGradient>
+        <radialGradient id="sunGlow" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#FFC24B" stop-opacity=".5"/><stop offset="100%" stop-color="#FFC24B" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="420" height="300" fill="#0E1738"/>
+      <circle cx="210" cy="150" r="112" fill="none" stroke="#FFFFFF" stroke-opacity=".22" stroke-width="2" stroke-dasharray="3 8"/>
+      <text x="210" y="288" text-anchor="middle" font-size="10.5" fill="#8FA0D6" font-family="Verdana,sans-serif">Earth's path around the Sun (1 year)</text>
+
+      <circle cx="210" cy="150" r="60" fill="url(#sunGlow)"/>
+      <g id="rays" stroke="#FFC24B" stroke-width="2" stroke-linecap="round" opacity=".7"></g>
+      <circle cx="210" cy="150" r="30" fill="url(#sunGrad)"/>
+      <text x="210" y="155" text-anchor="middle" font-size="11" fill="#7A4A00" font-family="Verdana,sans-serif" font-weight="bold">Sun</text>
+
+      <g id="earth">
+        <circle r="32" fill="#2C79BE"/>
+        <path d="M-20 -12 q10 -7 22 -3 q9 4 4 12 q-5 8 -16 5 q-11 -2 -14 -8 z" fill="#4FA35E"/>
+        <path d="M4 12 q10 -4 18 3 q6 6 0 12 q-6 6 -16 2 q-8 -4 -6 -10 z" fill="#5FB06D"/>
+        <circle r="32" fill="none" stroke="#9FD4FF" stroke-opacity=".45" stroke-width="1.5"/>
+        <circle id="marker" cx="25" cy="0" r="5.5" fill="#fff"/>
+        <circle id="marker2" cx="25" cy="0" r="3" fill="#FF6A4D"/>
+      </g>
+    </svg>
+
+    <div class="result" id="result"></div>
+
+    <div class="btns">
+      <button id="btnSpin" class="key">Spin once (1 day)<span class="es">(Gira una vez · 1 día)</span></button>
+      <button id="btnOrbit">Trip around the Sun (1 year)<span class="es">(Viaje alrededor del Sol · 1 año)</span></button>
+      <button id="btnReset">Reset<span class="es">(Reiniciar)</span></button>
+    </div>
+  </div>
+
+  <div class="rule">
+    <b>One spin = one day (24 hours). One trip around the Sun = one year (about 365 days).</b>
+    Because Earth spins toward the east, the Sun looks like it rises in the east and sets in the west.
+    <span class="es">(Un giro = un día (24 horas). Un viaje alrededor del Sol = un año (unos 365 días). Como la Tierra gira hacia el este, el Sol parece salir por el este y ponerse por el oeste.)</span>
+  </div>
+
+  <div class="sec">
+    <div class="quizhead">
+      <h2>Now answer<span class="es">(Ahora responde)</span></h2>
+      <div class="score"><div class="stars-row" id="starsRow">☆☆☆</div><span id="scoreText"></span></div>
+    </div>
+    <div id="quiz"></div>
+    <div class="finale" id="finale">
+      <h2 id="finaleTitle"></h2>
+      <p id="finaleText"></p>
+      <div class="btns"><button id="btnAgain">Play again<span class="es">(Jugar otra vez)</span></button></div>
+    </div>
+  </div>
+
+  <details>
+    <summary>For teachers and families</summary>
+    <p><b>The big idea:</b> Earth has two separate motions. It <b>rotates</b> on its axis once about every 24 hours — that is one day, and it is why the Sun appears to rise in the east and set in the west. It also <b>orbits</b> the Sun once about every 365 days — that is one year. These are very different speeds: a spin is fast (a day), an orbit is slow (a year).</p>
+    <p><b>Distractors targeted:</b> mixing up the daily spin (24 hours) with the yearly orbit (365 days); thinking the Sun circles Earth; and thinking Earth orbits the Sun in a single day.</p>
+  </details>
+
+</div>
+
+<script>
+"use strict";
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function setBi(el, en, es){
+    el.textContent = "";
+    el.appendChild(document.createTextNode(en));
+    if (es){ var s = document.createElement("span"); s.className = "es"; s.textContent = "(" + es + ")"; el.appendChild(s); }
+  }
+
+  /* sun rays */
+  (function(){
+    var out = "";
+    for (var a = 0; a < 360; a += 30){
+      var r = a * Math.PI/180;
+      out += '<line x1="'+(210+34*Math.cos(r)).toFixed(1)+'" y1="'+(150+34*Math.sin(r)).toFixed(1)+'" x2="'+(210+46*Math.cos(r)).toFixed(1)+'" y2="'+(150+46*Math.sin(r)).toFixed(1)+'"/>';
+    }
+    $("rays").innerHTML = out;
+  })();
+
+  var SUN = { x: 210, y: 150 }, ORBIT = 112, ER = 32;
+  var phi = 0, rho = 0, busy = false;   // phi: orbit angle, rho: spin angle
+
+  function draw(){
+    var ex = SUN.x + ORBIT * Math.cos(phi), ey = SUN.y + ORBIT * Math.sin(phi);
+    $("earth").setAttribute("transform", "translate(" + ex.toFixed(1) + "," + ey.toFixed(1) + ")");
+    var mx = (ER - 7) * Math.cos(rho), my = (ER - 7) * Math.sin(rho);
+    $("marker").setAttribute("cx", mx.toFixed(1)); $("marker").setAttribute("cy", my.toFixed(1));
+    $("marker2").setAttribute("cx", mx.toFixed(1)); $("marker2").setAttribute("cy", my.toFixed(1));
+  }
+
+  function animate(dur, step, done){
+    if (reduceMotion){ step(1); if (done) done(); return; }
+    busy = true;
+    var t0 = null;
+    function frame(ts){
+      if (!t0) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      step(p);
+      if (p < 1) requestAnimationFrame(frame); else { busy = false; if (done) done(); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function spinOnce(){
+    if (busy) return;
+    var start = rho;
+    animate(1800, function(p){ rho = start + p * 2 * Math.PI; draw(); }, function(){
+      setBi($("result"), "You spun the Earth once. That is one day — 24 hours. The Sun stayed still; only the Earth turned.",
+        "Giraste la Tierra una vez. Eso es un día: 24 horas. El Sol se quedó quieto; solo la Tierra giró.");
+    });
+  }
+  function orbitOnce(){
+    if (busy) return;
+    var startPhi = phi, startRho = rho;
+    animate(4200, function(p){ phi = startPhi + p * 2 * Math.PI; rho = startRho + p * 6 * 2 * Math.PI; draw(); }, function(){
+      setBi($("result"), "Earth went all the way around the Sun once. That is one year — about 365 days. A trip around the Sun is much slower than a spin.",
+        "La Tierra dio toda la vuelta al Sol una vez. Eso es un año: unos 365 días. Un viaje alrededor del Sol es mucho más lento que un giro.");
+    });
+  }
+  $("btnSpin").addEventListener("click", spinOnce);
+  $("btnOrbit").addEventListener("click", orbitOnce);
+  $("btnReset").addEventListener("click", function(){
+    if (busy) return;
+    phi = 0; rho = 0; draw();
+    setBi($("result"), "Press a button: spin the Earth in place, or send it all the way around the Sun.",
+      "Presiona un botón: gira la Tierra en su lugar, o mándala a dar toda la vuelta al Sol.");
+  });
+
+  /* quiz */
+  var QUESTIONS = [
+    {
+      text: "Which of these takes Earth about 24 hours?",
+      es: "¿Cuál de estas cosas le toma a la Tierra unas 24 horas?",
+      options: [
+        { text: "One complete turn on its axis.", es: "Una vuelta completa sobre su eje.", ok: true,
+          fb: "Right. One rotation takes about 24 hours, which is exactly why a day is 24 hours long.",
+          fbEs: "Correcto. Una rotación tarda unas 24 horas, que es exactamente por lo que un día dura 24 horas." },
+        { text: "One complete trip around the Sun.", es: "Un viaje completo alrededor del Sol.", ok: false,
+          fb: "A trip around the Sun takes about 365 days, which is one year. The 24-hour motion is the spin, not the trip.",
+          fbEs: "Un viaje alrededor del Sol tarda unos 365 días, que es un año. El movimiento de 24 horas es el giro, no el viaje." },
+        { text: "One-half turn on its axis.", es: "Media vuelta sobre su eje.", ok: false,
+          fb: "Half a turn takes 12 hours. Double it to get a whole turn: 24 hours.",
+          fbEs: "Media vuelta tarda 12 horas. Duplícalo para una vuelta completa: 24 horas." },
+        { text: "One complete set of Moon phases.", es: "Un ciclo completo de fases de la Luna.", ok: false,
+          fb: "The Moon takes about a month to go through its phases. Earth's spin is much faster than that.",
+          fbEs: "La Luna tarda alrededor de un mes en pasar por sus fases. El giro de la Tierra es mucho más rápido que eso." }
+      ]
+    },
+    {
+      text: "About how long does it take Earth to travel halfway around the Sun?",
+      es: "¿Aproximadamente cuánto tarda la Tierra en viajar la mitad alrededor del Sol?",
+      options: [
+        { text: "About 6 months.", es: "Unos 6 meses.", ok: true,
+          fb: "Yes. A full orbit is about 365 days, so halfway is about half a year. Orbiting is slow. Spinning is fast.",
+          fbEs: "Sí. Una órbita completa es de unos 365 días, así que la mitad es medio año. Orbitar es lento. Girar es rápido." },
+        { text: "About 12 hours.", es: "Unas 12 horas.", ok: false,
+          fb: "Twelve hours is half a spin, not half an orbit. Those are two different motions.",
+          fbEs: "Doce horas es medio giro, no media órbita. Son dos movimientos distintos." },
+        { text: "About 24 hours.", es: "Unas 24 horas.", ok: false,
+          fb: "Twenty-four hours is one whole spin on Earth's axis. The trip around the Sun takes about 365 of those days.",
+          fbEs: "Veinticuatro horas es un giro completo sobre el eje de la Tierra. El viaje alrededor del Sol tarda unos 365 de esos días." },
+        { text: "About one week.", es: "Alrededor de una semana.", ok: false,
+          fb: "A week is only 7 spins. Earth needs about 182 days to get halfway around the Sun.",
+          fbEs: "Una semana son solo 7 giros. La Tierra necesita unos 182 días para llegar a la mitad alrededor del Sol." }
+      ]
+    },
+    {
+      text: "Why does the Sun appear to rise in the east and set in the west every single day?",
+      es: "¿Por qué parece que el Sol sale por el este y se oculta por el oeste todos los días?",
+      options: [
+        { text: "Because Earth rotates on its axis.", es: "Porque la Tierra gira sobre su eje.", ok: true,
+          fb: "That's it. In the picture the Sun stays in the middle and Earth spins. That daily spin is what makes the Sun look like it rises and sets.",
+          fbEs: "Eso es. En la imagen el Sol se queda en el centro y la Tierra gira. Ese giro diario es lo que hace que el Sol parezca salir y ponerse." },
+        { text: "Because the Sun circles around Earth once a day.", es: "Porque el Sol gira alrededor de la Tierra una vez al día.", ok: false,
+          fb: "People believed that a long time ago, but the Sun stays in place and Earth turns. In the picture the Sun never moves — Earth does.",
+          fbEs: "La gente creía eso hace mucho tiempo, pero el Sol se queda en su lugar y la Tierra gira. En la imagen el Sol nunca se mueve; la Tierra sí." },
+        { text: "Because Earth goes around the Sun once a day.", es: "Porque la Tierra da la vuelta al Sol una vez al día.", ok: false,
+          fb: "Earth does orbit the Sun, but that takes about 365 days, not one. Sunrise and sunset come from the daily spin.",
+          fbEs: "La Tierra sí orbita el Sol, pero eso tarda unos 365 días, no uno. El amanecer y el atardecer vienen del giro diario." },
+        { text: "Because the Sun gets brighter and then dimmer.", es: "Porque el Sol se pone más brillante y luego más tenue.", ok: false,
+          fb: "The Sun's brightness stays about the same. What changes is whether your part of Earth is facing it.",
+          fbEs: "El brillo del Sol se mantiene casi igual. Lo que cambia es si tu parte de la Tierra está frente a él." }
+      ]
+    }
+  ];
+
+  var LETTERS = ["A", "B", "C", "D"];
+  var firstTry = new Array(QUESTIONS.length).fill(null);
+  function buildQuiz(){
+    var box = $("quiz"); box.innerHTML = "";
+    firstTry = new Array(QUESTIONS.length).fill(null);
+    $("finale").className = "finale";
+    QUESTIONS.forEach(function(q, qi){
+      var card = document.createElement("div"); card.className = "q";
+      var top = document.createElement("div"); top.className = "qtop";
+      var num = document.createElement("span"); num.className = "qnum"; num.textContent = String(qi + 1);
+      var qt = document.createElement("div"); qt.className = "qtext"; setBi(qt, q.text, q.es);
+      top.appendChild(num); top.appendChild(qt); card.appendChild(top);
+      var opts = document.createElement("div"); opts.className = "opts";
+      q.options.forEach(function(opt, oi){
+        var b = document.createElement("button"); b.className = "opt";
+        b.innerHTML = '<span class="ltr">' + LETTERS[oi] + '</span><span class="txt"></span>';
+        setBi(b.querySelector(".txt"), opt.text, opt.es);
+        b.addEventListener("click", function(){ answer(qi, oi, card, b); });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+      var fb = document.createElement("div"); fb.className = "fb"; fb.style.display = "none"; card.appendChild(fb);
+      box.appendChild(card);
+    });
+    updateScore();
+  }
+  function answer(qi, oi, card, btn){
+    var opt = QUESTIONS[qi].options[oi];
+    if (btn.disabled) return;
+    if (firstTry[qi] === null) firstTry[qi] = opt.ok;
+    var fb = card.querySelector(".fb"); fb.style.display = "block"; fb.innerHTML = "";
+    var head = document.createElement("b"), body = document.createElement("span");
+    if (opt.ok){
+      btn.className = "opt right";
+      var all = card.querySelectorAll(".opt"); for (var i = 0; i < all.length; i++) all[i].disabled = true;
+      fb.className = "fb right";
+      if (firstTry[qi]) setBi(head, "Correct! ", "¡Correcto!"); else setBi(head, "Yes, that's the one. ", "Sí, esa es.");
+    } else {
+      btn.className = "opt wrong"; btn.disabled = true; fb.className = "fb rethink";
+      setBi(head, "Not that one. ", "Esa no.");
+    }
+    setBi(body, opt.fb, opt.fbEs);
+    fb.appendChild(head); fb.appendChild(body);
+    if (!opt.ok){ var tail = document.createElement("div"); tail.style.marginTop = "8px"; setBi(tail, "Try again.", "Intenta otra vez."); fb.appendChild(tail); }
+    updateScore();
+  }
+  function updateScore(){
+    var right = firstTry.filter(function(v){ return v === true; }).length, row = "";
+    for (var i = 0; i < QUESTIONS.length; i++) row += firstTry[i] === true ? "★" : "☆";
+    $("starsRow").textContent = row;
+    setBi($("scoreText"), right + " of " + QUESTIONS.length + " right", right + " de " + QUESTIONS.length + " correctas");
+    var solved = 0, cards = $("quiz").querySelectorAll(".q");
+    for (var c = 0; c < cards.length; c++) if (cards[c].querySelector(".opt.right")) solved++;
+    if (solved === QUESTIONS.length){
+      $("finale").className = "finale show";
+      setBi($("finaleTitle"), "You got it: Two-Motion Master!", "¡Lo lograste: Maestro de los dos movimientos!");
+      setBi($("finaleText"),
+        "One spin = one day (24 hours). One trip around the Sun = one year (about 365 days). And because Earth spins, the Sun looks like it rises in the east and sets in the west every day.",
+        "Un giro = un día (24 horas). Un viaje alrededor del Sol = un año (unos 365 días). Y como la Tierra gira, el Sol parece salir por el este y ponerse por el oeste cada día.");
+    }
+  }
+  $("btnAgain").addEventListener("click", function(){ buildQuiz(); $("quiz").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); });
+
+  /* start */
+  draw();
+  setBi($("result"), "Press a button: spin the Earth in place, or send it all the way around the Sun.",
+    "Presiona un botón: gira la Tierra en su lugar, o mándala a dar toda la vuelta al Sol.");
+  buildQuiz();
+})();
+</script>
+</body>
+</html>
