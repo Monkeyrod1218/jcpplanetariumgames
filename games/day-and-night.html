@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day &amp; Night — Earth's Spin</title>
+<style>
+  :root{
+    --ink:#0B1230;--panel:#16204A;--panel2:#1D2A5C;--line:#31407A;
+    --text:#EAF0FF;--dim:#A5B3DC;--sun:#FFC24B;--sun-soft:#FFE9AE;
+    --good:#57D3A2;--think:#FFD37A;--radius:16px;
+    --display:"Trebuchet MS","Lucida Grande",Tahoma,sans-serif;
+    --body:Verdana,Geneva,"DejaVu Sans",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+  .wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:22px 20px 70px}
+
+  h1{font-family:var(--display);font-size:clamp(24px,5vw,34px);line-height:1.08;letter-spacing:-.5px;margin:0 0 8px;font-weight:700;text-align:center}
+  h2{font-family:var(--display);font-size:19px;margin:0 0 2px}
+  .lead{color:var(--dim);text-align:center;margin:0 auto 4px;max-width:46ch;font-size:14px}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px}
+  .panel svg{display:block;width:100%;height:auto;border-radius:12px}
+
+  .readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  .rd{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+  .rd .lbl{font-size:11.5px;color:var(--dim);margin-bottom:3px}
+  .rd .val{font-family:var(--display);font-size:18px;font-weight:700;line-height:1.15}
+  .rd.hot{border-color:var(--think);box-shadow:0 0 0 2px rgba(255,211,122,.22)}
+  .rd.hot .val{color:var(--think)}
+  .rd .val .es{font-size:.72em;margin-top:3px}
+
+  .sliderrow{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .sliderrow .cap{font-size:12px;color:var(--dim);white-space:nowrap}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:40px;background:transparent;margin:0;touch-action:pan-y}
+  input[type=range]::-webkit-slider-runnable-track{height:12px;border-radius:999px;background:linear-gradient(90deg,#3B4C8E,#6C7FD4)}
+  input[type=range]::-moz-range-track{height:12px;border-radius:999px;background:linear-gradient(90deg,#3B4C8E,#6C7FD4)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:34px;height:34px;border-radius:50%;background:var(--sun);border:3px solid #12193C;margin-top:-11px;box-shadow:0 0 0 3px rgba(255,194,75,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:var(--sun);border:3px solid #12193C;cursor:pointer}
+
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  button{font-family:var(--body);font-size:14px;color:var(--text);background:#243468;border:1px solid var(--line);
+    border-radius:12px;padding:0 16px;min-height:46px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,194,75,.22)}
+  button:hover{background:#2E3F7C}
+  button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--think);outline-offset:2px}
+  button.key{background:var(--sun);color:#231602;border-color:#E0A62F;font-weight:bold}
+  button.key:hover{background:#FFD068}
+
+  .rule{margin-top:16px;border:1px solid rgba(255,211,122,.5);background:rgba(255,211,122,.09);border-radius:var(--radius);padding:14px 16px;font-size:14.5px;text-align:center}
+  .rule b{color:var(--think)}
+
+  .quizhead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:2px}
+  .score{font-size:13px;color:var(--dim)}
+  .stars-row{letter-spacing:3px;font-size:17px}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-top:12px}
+  .qnum{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);
+    font-family:var(--display);font-weight:700;font-size:14px;margin-right:9px;flex:none}
+  .qtop{display:flex;align-items:flex-start}
+  .qtext{font-size:15px;line-height:1.5}
+  .opts{display:grid;gap:8px;margin-top:12px}
+  .opt{text-align:left;display:flex;gap:10px;align-items:flex-start;width:100%;padding:11px 13px;font-size:14px;line-height:1.45;background:var(--panel2);border-radius:12px}
+  .opt .ltr{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;background:#111C44}
+  .opt:disabled{cursor:default;opacity:1}
+  .opt.right{background:rgba(87,211,162,.16);border-color:var(--good)}
+  .opt.right .ltr{background:var(--good);color:#08321F;border-color:var(--good)}
+  .opt.wrong{background:rgba(255,106,77,.12);border-color:rgba(255,106,77,.6)}
+  .opt.wrong .txt{text-decoration:line-through;color:var(--dim)}
+  .fb{margin-top:11px;padding:12px 14px;border-radius:12px;font-size:13.5px;line-height:1.55;border:1px solid var(--line);background:#111B42}
+  .fb.right{border-color:rgba(87,211,162,.5);background:rgba(87,211,162,.10)}
+  .fb.rethink{border-color:rgba(255,211,122,.5);background:rgba(255,211,122,.09)}
+  .fb b{font-family:var(--display);font-size:14.5px}
+  .act{margin-top:10px}
+  .act button{min-height:0;padding:7px 12px}
+  .finale{margin-top:16px;border-radius:var(--radius);padding:20px;border:1px solid var(--sun);background:linear-gradient(160deg,#20305F,#161F45);display:none}
+  .finale.show{display:block}
+  .finale h2{color:var(--sun)}
+
+  details{margin-top:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 15px;font-size:13px;color:var(--dim)}
+  summary{cursor:pointer;color:var(--text);font-family:var(--display);font-size:15px}
+  details b{color:var(--text)}
+  .sec{margin-top:24px}
+
+  .backbar{padding:14px 0 6px 16px}
+  .backlink{display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--display);font-size:14px;font-weight:bold;
+    color:var(--text);text-decoration:none;background:#243468;border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-height:44px}
+  .backlink:hover{background:#2E3F7C;border-color:var(--sun)}
+
+  .es{display:block;font-style:italic;font-weight:normal;font-size:.82em;line-height:1.35;color:var(--dim);margin-top:2px}
+  h1 .es{font-size:.5em;color:var(--think);margin-top:6px}
+  .btns button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.18;min-height:52px;padding-top:8px;padding-bottom:8px}
+  .btns button .es{font-size:.8em}
+  .act button .es{font-size:.85em}
+  .backlink .es{width:100%;text-align:left;font-size:.8em;margin-top:1px}
+  .cap .es{font-size:.9em;white-space:normal}
+  @media (max-width:620px){ .readouts{grid-template-columns:1fr} .rd{display:flex;justify-content:space-between;align-items:baseline;gap:10px} .rd .lbl{margin:0} }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="backbar">
+  <a class="backlink" href="../index.html#3">&#8592; Back to games<span class="es">(Volver a los juegos)</span></a>
+</div>
+
+<div class="wrap">
+
+  <h1>Day &amp; Night<span class="es">(Día y noche)</span></h1>
+  <p class="lead">Spin the Earth and watch Austin go from day to night.<span class="es">(Gira la Tierra y observa cómo Austin pasa del día a la noche.)</span></p>
+
+  <div class="panel" id="lab">
+    <svg viewBox="0 0 420 250" role="img" aria-label="Earth seen from above the North Pole, lit on one side by the Sun, with Austin marked">
+      <defs>
+        <radialGradient id="sunGrad" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#FFF3C9"/><stop offset="55%" stop-color="#FFC24B"/><stop offset="100%" stop-color="#F59B20"/>
+        </radialGradient>
+        <radialGradient id="sunGlow" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#FFC24B" stop-opacity=".45"/><stop offset="100%" stop-color="#FFC24B" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="420" height="250" fill="#0E1738"/>
+      <text x="16" y="22" font-size="12" fill="#DCE6FF" font-family="Verdana,sans-serif">Looking down from above the North Pole</text>
+      <text x="16" y="34" font-size="9.5" font-style="italic" fill="#AEBAE4" font-family="Verdana,sans-serif">(Vista desde arriba del Polo Norte)</text>
+
+      <circle cx="58" cy="128" r="52" fill="url(#sunGlow)"/>
+      <g id="rays" stroke="#FFC24B" stroke-width="2" stroke-linecap="round" opacity=".65"></g>
+      <circle cx="58" cy="128" r="24" fill="url(#sunGrad)"/>
+      <text x="58" y="170" text-anchor="middle" font-size="11" fill="#FFD98A" font-family="Verdana,sans-serif">Sun</text>
+      <text x="58" y="182" text-anchor="middle" font-size="9" font-style="italic" fill="#E7B978" font-family="Verdana,sans-serif">(Sol)</text>
+
+      <!-- light toward Earth -->
+      <g stroke="#FFC24B" stroke-width="1.3" opacity=".3" stroke-dasharray="5 7">
+        <line x1="92" y1="100" x2="180" y2="100"/><line x1="92" y1="128" x2="180" y2="128"/><line x1="92" y1="156" x2="180" y2="156"/>
+      </g>
+
+      <!-- Earth -->
+      <circle cx="280" cy="128" r="82" fill="#2C79BE"/>
+      <path d="M214 92 q26 -16 52 -6 q20 8 12 24 q-8 16 -34 12 q-24 -4 -30 -14 z" fill="#4FA35E"/>
+      <path d="M262 158 q26 -10 44 4 q14 12 4 24 q-12 14 -34 6 q-20 -8 -18 -20 z" fill="#5FB06D"/>
+      <path d="M320 96 q22 -6 30 10 q6 14 -12 20 q-20 6 -28 -8 q-6 -14 10 -22 z" fill="#5FB06D"/>
+      <path id="night" d="M280 46 A82 82 0 0 1 280 210 Z" fill="rgba(6,12,30,.66)"/>
+      <line x1="280" y1="46" x2="280" y2="210" stroke="#9FD4FF" stroke-opacity=".3" stroke-width="1"/>
+      <circle cx="280" cy="128" r="82" fill="none" stroke="#9FD4FF" stroke-opacity=".45" stroke-width="1.5"/>
+      <g id="pin"><circle id="pinDot" cx="200" cy="128" r="7.5" fill="#fff"/><circle id="pinDot2" cx="200" cy="128" r="4" fill="#FF6A4D"/></g>
+      <text id="pinLabelHalo" x="238" y="128" text-anchor="middle" font-size="12" font-family="Verdana,sans-serif" fill="none" stroke="#081026" stroke-width="3.2" stroke-linejoin="round">Austin</text>
+      <text id="pinLabel" x="238" y="128" text-anchor="middle" font-size="12" fill="#fff" font-family="Verdana,sans-serif">Austin</text>
+
+      <text x="238" y="232" text-anchor="middle" font-size="10.5" fill="#FFD98A" font-family="Verdana,sans-serif">day side</text>
+      <text x="360" y="232" text-anchor="middle" font-size="10.5" fill="#95A6DC" font-family="Verdana,sans-serif">night side</text>
+    </svg>
+
+    <div class="readouts">
+      <div class="rd"><div class="lbl">Clock in Austin<span class="es">(Reloj en Austin)</span></div><div class="val" id="clockOut">4:00 P.M.</div></div>
+      <div class="rd"><div class="lbl">Austin right now<span class="es">(Austin ahora mismo)</span></div><div class="val" id="dayOut"></div></div>
+      <div class="rd" id="turnCard"><div class="lbl">Earth has turned<span class="es">(La Tierra ha girado)</span></div><div class="val" id="turnOut"></div></div>
+    </div>
+
+    <div class="sliderrow">
+      <span class="cap">4:00 P.M.</span>
+      <input id="timeSlider" type="range" min="0" max="24" step="0.5" value="0" aria-label="Hours after 4:00 P.M.">
+      <span class="cap">24 hours later<span class="es">(24 horas después)</span></span>
+    </div>
+    <div class="btns">
+      <button id="btnHalf" class="key">Jump 12 hours<span class="es">(Salta 12 horas)</span></button>
+      <button id="btnReset">Back to 4:00 P.M.<span class="es">(Volver a las 4:00 p. m.)</span></button>
+    </div>
+  </div>
+
+  <div class="rule">
+    <b>Earth spins once every 24 hours.</b> In 12 hours it makes half a turn — so 4:00 P.M. becomes 4:00 A.M. and day becomes night. The Sun keeps shining; your side just turned away.
+    <span class="es">(La Tierra gira una vez cada 24 horas. En 12 horas da media vuelta, así que las 4:00 p. m. se convierten en 4:00 a. m. y el día se hace noche. El Sol sigue brillando; tu lado solo giró para el otro lado.)</span>
+  </div>
+
+  <div class="sec">
+    <div class="quizhead">
+      <h2>Now answer<span class="es">(Ahora responde)</span></h2>
+      <div class="score"><div class="stars-row" id="starsRow">☆☆</div><span id="scoreText"></span></div>
+    </div>
+    <div id="quiz"></div>
+    <div class="finale" id="finale">
+      <h2 id="finaleTitle"></h2>
+      <p id="finaleText"></p>
+      <div class="btns"><button id="btnAgain">Play again<span class="es">(Jugar otra vez)</span></button></div>
+    </div>
+  </div>
+
+  <details>
+    <summary>For teachers and families</summary>
+    <p><b>The big idea:</b> Earth rotates once on its axis about every 24 hours. Twelve hours is half of that, so in 12 hours Earth makes one-half turn — 4:00 P.M. becomes 4:00 A.M., and a place moves from the day side to the night side. The Sun never stops shining; half of Earth is always lit, so "night" just means your side has turned away from the Sun.</p>
+    <p><b>Distractors targeted:</b> the Sun appears to move but actually stays put while Earth turns; the Sun does not switch off at night; and Earth's trip around the Sun (about 365 days) is a different, much slower motion than its daily spin.</p>
+  </details>
+
+</div>
+
+<script>
+"use strict";
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function setBi(el, en, es){
+    el.textContent = "";
+    el.appendChild(document.createTextNode(en));
+    if (es){ var s = document.createElement("span"); s.className = "es"; s.textContent = "(" + es + ")"; el.appendChild(s); }
+  }
+
+  /* sun rays */
+  (function(){
+    var out = "";
+    for (var a = 0; a < 360; a += 30){
+      var r = a * Math.PI/180;
+      out += '<line x1="'+(58+27*Math.cos(r)).toFixed(1)+'" y1="'+(128+27*Math.sin(r)).toFixed(1)+'" x2="'+(58+38*Math.cos(r)).toFixed(1)+'" y2="'+(128+38*Math.sin(r)).toFixed(1)+'"/>';
+    }
+    $("rays").innerHTML = out;
+  })();
+
+  var EC = { x: 280, y: 128, r: 82 }, START = 16, elapsed = 0;
+
+  function austinHour(t){ var h = (START + t) % 24; return h < 0 ? h + 24 : h; }
+  function formatClock(h24){
+    var h = Math.floor(h24), m = Math.round((h24 - h) * 60);
+    if (m === 60){ m = 0; h = (h + 1) % 24; }
+    var suf = h < 12 ? "A.M." : "P.M.", h12 = h % 12; if (h12 === 0) h12 = 12;
+    return h12 + ":" + (m < 10 ? "0" + m : m) + " " + suf;
+  }
+  function angleDeg(t){ return 150 - (t / 24) * 360; }        // Austin's position, seen from the North Pole
+  function isDay(t){ return Math.cos(angleDeg(t) * Math.PI / 180) < 0; }  // day = left half (faces the Sun)
+  function turn(t){
+    var f = t / 24;
+    if (f <= 0.001) return { en: "no turn yet", es: "aún no gira" };
+    if (Math.abs(f - 0.25) < 0.02) return { en: "a quarter turn", es: "un cuarto de vuelta" };
+    if (Math.abs(f - 0.5) < 0.02) return { en: "half a turn", es: "media vuelta" };
+    if (Math.abs(f - 0.75) < 0.02) return { en: "three-quarter turn", es: "tres cuartos de vuelta" };
+    if (Math.abs(f - 1) < 0.02) return { en: "one whole turn", es: "una vuelta completa" };
+    return { en: Math.round(f * 100) + "% of a turn", es: Math.round(f * 100) + "% de una vuelta" };
+  }
+
+  function render(){
+    var a = angleDeg(elapsed) * Math.PI / 180;
+    var px = EC.x + EC.r * Math.cos(a), py = EC.y + EC.r * Math.sin(a);
+    $("pinDot").setAttribute("cx", px.toFixed(1)); $("pinDot").setAttribute("cy", py.toFixed(1));
+    $("pinDot2").setAttribute("cx", px.toFixed(1)); $("pinDot2").setAttribute("cy", py.toFixed(1));
+    var lx = EC.x + (EC.r - 38) * Math.cos(a), ly = EC.y + (EC.r - 38) * Math.sin(a);
+    $("pinLabel").setAttribute("x", lx.toFixed(1)); $("pinLabel").setAttribute("y", (ly + 4).toFixed(1));
+    $("pinLabelHalo").setAttribute("x", lx.toFixed(1)); $("pinLabelHalo").setAttribute("y", (ly + 4).toFixed(1));
+
+    $("clockOut").textContent = formatClock(austinHour(elapsed));
+    if (isDay(elapsed)) setBi($("dayOut"), "Daytime — facing the Sun", "Es de día — mirando al Sol");
+    else setBi($("dayOut"), "Nighttime — turned away", "Es de noche — de espaldas al Sol");
+    var tw = turn(elapsed);
+    setBi($("turnOut"), tw.en, tw.es);
+    $("turnCard").className = Math.abs(elapsed - 12) < 0.02 ? "rd hot" : "rd";
+  }
+  function setElapsed(v){
+    elapsed = Math.max(0, Math.min(24, v));
+    $("timeSlider").value = String(elapsed);
+    render();
+  }
+
+  $("timeSlider").addEventListener("input", function(e){ setElapsed(parseFloat(e.target.value)); });
+  $("btnHalf").addEventListener("click", function(){ setElapsed(elapsed + 12); });
+  $("btnReset").addEventListener("click", function(){ setElapsed(0); });
+
+  /* quiz */
+  var QUESTIONS = [
+    {
+      text: "At a school in Austin, Texas, the school day ends at 4:00 P.M. Which event will happen during the 12 hours after the school day ends?",
+      es: "En una escuela de Austin, Texas, el día escolar termina a las 4:00 p. m. ¿Qué sucederá durante las 12 horas después de que termina la escuela?",
+      options: [
+        { text: "The Sun will move halfway around Earth.", es: "El Sol se moverá hasta la mitad alrededor de la Tierra.", ok: false,
+          fb: "The Sun looks like it moves, but it stays put while Earth spins. In the picture the Sun never moves — only Austin turns.",
+          fbEs: "El Sol parece moverse, pero se queda quieto mientras la Tierra gira. En la imagen el Sol nunca se mueve; solo Austin gira.",
+          go: { label: "Spin ahead and watch", labelEs: "Gira y observa", hours: 6 } },
+        { text: "The Sun will stop shining on Earth.", es: "El Sol dejará de brillar sobre la Tierra.", ok: false,
+          fb: "The Sun never switches off. When Austin gets dark, look at the picture: the Sun is still lighting up half of Earth. Austin has just turned to the night side.",
+          fbEs: "El Sol nunca se apaga. Cuando Austin se oscurece, mira la imagen: el Sol sigue iluminando la mitad de la Tierra. Austin solo giró hacia el lado de noche.",
+          go: { label: "Show Austin at midnight", labelEs: "Muéstrame Austin a la medianoche", hours: 8 } },
+        { text: "Earth will complete one-half turn on its axis.", es: "La Tierra completará media vuelta sobre su eje.", ok: true,
+          fb: "Earth makes one whole turn about every 24 hours. Half of 24 is 12, so in 12 hours Earth makes one-half turn. That is why 4:00 P.M. becomes 4:00 A.M. and Austin goes from daylight to dark.",
+          fbEs: "La Tierra da una vuelta completa aproximadamente cada 24 horas. La mitad de 24 es 12, así que en 12 horas la Tierra da media vuelta. Por eso las 4:00 p. m. se convierten en 4:00 a. m. y Austin pasa del día a la oscuridad." },
+        { text: "Earth will move halfway around the Sun.", es: "La Tierra se moverá hasta la mitad alrededor del Sol.", ok: false,
+          fb: "That is Earth's other motion, its orbit. One full trip around the Sun takes about 365 days, so halfway would take about 6 months. Twelve hours is far too short for that.",
+          fbEs: "Ese es el otro movimiento de la Tierra, su órbita. Una vuelta completa alrededor del Sol tarda unos 365 días, así que la mitad tardaría unos 6 meses. Doce horas es muy poco para eso.",
+          go: { label: "See what 12 hours really does", labelEs: "Mira lo que 12 horas hacen en realidad", hours: 12 } }
+      ]
+    },
+    {
+      text: "It is 2:00 A.M. in Austin and the sky is completely dark. What is the Sun doing right now?",
+      es: "Son las 2:00 a. m. en Austin y el cielo está completamente oscuro. ¿Qué está haciendo el Sol en este momento?",
+      options: [
+        { text: "Shining on the other side of Earth.", es: "Brillando en el otro lado de la Tierra.", ok: true,
+          fb: "Exactly. The Sun shines all the time. Half of Earth is always in daylight. At 2:00 A.M., Austin is on the half that has turned away.",
+          fbEs: "Exacto. El Sol brilla todo el tiempo. La mitad de la Tierra siempre tiene luz de día. A las 2:00 a. m., Austin está en la mitad que giró hacia el otro lado." },
+        { text: "Turned off until morning.", es: "Apagado hasta la mañana.", ok: false,
+          fb: "Stars like our Sun don't turn off and on. Spin the Earth to the middle of the night and look: the day side is still bright.",
+          fbEs: "Las estrellas como nuestro Sol no se apagan ni se encienden. Gira la Tierra hasta la mitad de la noche y mira: el lado de día sigue iluminado.",
+          go: { label: "Spin to midnight and look", labelEs: "Gira a la medianoche y mira", hours: 8 } },
+        { text: "Hiding behind the Moon.", es: "Escondido detrás de la Luna.", ok: false,
+          fb: "That is a solar eclipse, and it only lasts a few minutes and only happens in daytime. Ordinary night is caused by Earth's rotation, not by the Moon.",
+          fbEs: "Eso es un eclipse solar, que solo dura unos minutos y solo ocurre de día. La noche normal la causa la rotación de la Tierra, no la Luna." },
+        { text: "Traveling back to the east side of the sky.", es: "Viajando de regreso al lado este del cielo.", ok: false,
+          fb: "The Sun isn't traveling anywhere. Austin keeps turning, so the Sun comes back into view in the east about 12 hours after it set.",
+          fbEs: "El Sol no viaja a ningún lado. Austin sigue girando, así que el Sol vuelve a aparecer por el este unas 12 horas después de ocultarse." }
+      ]
+    }
+  ];
+
+  var LETTERS = ["A", "B", "C", "D"];
+  var firstTry = new Array(QUESTIONS.length).fill(null);
+
+  function buildQuiz(){
+    var box = $("quiz"); box.innerHTML = "";
+    firstTry = new Array(QUESTIONS.length).fill(null);
+    $("finale").className = "finale";
+    QUESTIONS.forEach(function(q, qi){
+      var card = document.createElement("div"); card.className = "q";
+      var top = document.createElement("div"); top.className = "qtop";
+      var num = document.createElement("span"); num.className = "qnum"; num.textContent = String(qi + 1);
+      var qt = document.createElement("div"); qt.className = "qtext"; setBi(qt, q.text, q.es);
+      top.appendChild(num); top.appendChild(qt); card.appendChild(top);
+      var opts = document.createElement("div"); opts.className = "opts";
+      q.options.forEach(function(opt, oi){
+        var b = document.createElement("button"); b.className = "opt";
+        b.innerHTML = '<span class="ltr">' + LETTERS[oi] + '</span><span class="txt"></span>';
+        setBi(b.querySelector(".txt"), opt.text, opt.es);
+        b.addEventListener("click", function(){ answer(qi, oi, card, b); });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+      var fb = document.createElement("div"); fb.className = "fb"; fb.style.display = "none"; card.appendChild(fb);
+      box.appendChild(card);
+    });
+    updateScore();
+  }
+  function answer(qi, oi, card, btn){
+    var opt = QUESTIONS[qi].options[oi];
+    if (btn.disabled) return;
+    if (firstTry[qi] === null) firstTry[qi] = opt.ok;
+    var fb = card.querySelector(".fb"); fb.style.display = "block"; fb.innerHTML = "";
+    var head = document.createElement("b"), body = document.createElement("span");
+    if (opt.ok){
+      btn.className = "opt right";
+      var all = card.querySelectorAll(".opt"); for (var i = 0; i < all.length; i++) all[i].disabled = true;
+      fb.className = "fb right";
+      if (firstTry[qi]) setBi(head, "Correct! ", "¡Correcto!"); else setBi(head, "Yes, that's the one. ", "Sí, esa es.");
+    } else {
+      btn.className = "opt wrong"; btn.disabled = true; fb.className = "fb rethink";
+      setBi(head, "Not that one. ", "Esa no.");
+    }
+    setBi(body, opt.fb, opt.fbEs);
+    fb.appendChild(head); fb.appendChild(body);
+    if (!opt.ok){ var tail = document.createElement("div"); tail.style.marginTop = "8px"; setBi(tail, "Try again.", "Intenta otra vez."); fb.appendChild(tail); }
+    if (opt.go){
+      var act = document.createElement("div"); act.className = "act";
+      var go = document.createElement("button"); setBi(go, opt.go.label, opt.go.labelEs);
+      go.addEventListener("click", function(){ setElapsed(opt.go.hours); $("lab").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" }); });
+      act.appendChild(go); fb.appendChild(act);
+    }
+    updateScore();
+  }
+  function updateScore(){
+    var right = firstTry.filter(function(v){ return v === true; }).length, row = "";
+    for (var i = 0; i < QUESTIONS.length; i++) row += firstTry[i] === true ? "★" : "☆";
+    $("starsRow").textContent = row;
+    setBi($("scoreText"), right + " of " + QUESTIONS.length + " right", right + " de " + QUESTIONS.length + " correctas");
+    var solved = 0, cards = $("quiz").querySelectorAll(".q");
+    for (var c = 0; c < cards.length; c++) if (cards[c].querySelector(".opt.right")) solved++;
+    if (solved === QUESTIONS.length){
+      $("finale").className = "finale show";
+      setBi($("finaleTitle"), "You got it: Day & Night Detective!", "¡Lo lograste: Detective del día y la noche!");
+      setBi($("finaleText"),
+        "Earth spins once every 24 hours, so 12 hours is half a turn — 4:00 P.M. becomes 4:00 A.M. and day becomes night. And the Sun never turns off; your side of Earth just turns away from it.",
+        "La Tierra gira una vez cada 24 horas, así que 12 horas es media vuelta: las 4:00 p. m. se convierten en 4:00 a. m. y el día se hace noche. Y el Sol nunca se apaga; tu lado de la Tierra solo gira para el otro lado.");
+    }
+  }
+  $("btnAgain").addEventListener("click", function(){ buildQuiz(); $("quiz").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); });
+
+  /* start */
+  setElapsed(0);
+  buildQuiz();
+})();
+</script>
+</body>
+</html>
