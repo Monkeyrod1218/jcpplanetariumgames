@@ -111,11 +111,13 @@
 
       <g id="earth">
         <circle r="32" fill="#2C79BE"/>
-        <path d="M-20 -12 q10 -7 22 -3 q9 4 4 12 q-5 8 -16 5 q-11 -2 -14 -8 z" fill="#4FA35E"/>
-        <path d="M4 12 q10 -4 18 3 q6 6 0 12 q-6 6 -16 2 q-8 -4 -6 -10 z" fill="#5FB06D"/>
+        <g id="earthSpin">
+          <path d="M-20 -12 q10 -7 22 -3 q9 4 4 12 q-5 8 -16 5 q-11 -2 -14 -8 z" fill="#4FA35E"/>
+          <path d="M4 12 q10 -4 18 3 q6 6 0 12 q-6 6 -16 2 q-8 -4 -6 -10 z" fill="#5FB06D"/>
+          <circle id="marker" cx="25" cy="0" r="5.5" fill="#fff"/>
+          <circle id="marker2" cx="25" cy="0" r="3" fill="#FF6A4D"/>
+        </g>
         <circle r="32" fill="none" stroke="#9FD4FF" stroke-opacity=".45" stroke-width="1.5"/>
-        <circle id="marker" cx="25" cy="0" r="5.5" fill="#fff"/>
-        <circle id="marker2" cx="25" cy="0" r="3" fill="#FF6A4D"/>
       </g>
     </svg>
 
@@ -182,9 +184,8 @@
   function draw(){
     var ex = SUN.x + ORBIT * Math.cos(phi), ey = SUN.y + ORBIT * Math.sin(phi);
     $("earth").setAttribute("transform", "translate(" + ex.toFixed(1) + "," + ey.toFixed(1) + ")");
-    var mx = (ER - 7) * Math.cos(rho), my = (ER - 7) * Math.sin(rho);
-    $("marker").setAttribute("cx", mx.toFixed(1)); $("marker").setAttribute("cy", my.toFixed(1));
-    $("marker2").setAttribute("cx", mx.toFixed(1)); $("marker2").setAttribute("cy", my.toFixed(1));
+    // Spin the whole surface (continents + the dot) around the Earth's center.
+    $("earthSpin").setAttribute("transform", "rotate(" + (rho * 180 / Math.PI).toFixed(1) + ")");
   }
 
   function animate(dur, step, done){
