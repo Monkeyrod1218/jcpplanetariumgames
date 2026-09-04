@@ -135,10 +135,13 @@
       </g>
 
       <!-- Earth -->
+      <clipPath id="earthClip"><circle cx="280" cy="128" r="82"/></clipPath>
       <circle cx="280" cy="128" r="82" fill="#2C79BE"/>
-      <path d="M214 92 q26 -16 52 -6 q20 8 12 24 q-8 16 -34 12 q-24 -4 -30 -14 z" fill="#4FA35E"/>
-      <path d="M262 158 q26 -10 44 4 q14 12 4 24 q-12 14 -34 6 q-20 -8 -18 -20 z" fill="#5FB06D"/>
-      <path d="M320 96 q22 -6 30 10 q6 14 -12 20 q-20 6 -28 -8 q-6 -14 10 -22 z" fill="#5FB06D"/>
+      <g id="land" clip-path="url(#earthClip)">
+        <path d="M214 92 q26 -16 52 -6 q20 8 12 24 q-8 16 -34 12 q-24 -4 -30 -14 z" fill="#4FA35E"/>
+        <path d="M262 158 q26 -10 44 4 q14 12 4 24 q-12 14 -34 6 q-20 -8 -18 -20 z" fill="#5FB06D"/>
+        <path d="M320 96 q22 -6 30 10 q6 14 -12 20 q-20 6 -28 -8 q-6 -14 10 -22 z" fill="#5FB06D"/>
+      </g>
       <path id="night" d="M280 46 A82 82 0 0 1 280 210 Z" fill="rgba(6,12,30,.66)"/>
       <line x1="280" y1="46" x2="280" y2="210" stroke="#9FD4FF" stroke-opacity=".3" stroke-width="1"/>
       <circle cx="280" cy="128" r="82" fill="none" stroke="#9FD4FF" stroke-opacity=".45" stroke-width="1.5"/>
@@ -162,7 +165,7 @@
       <span class="cap">24 hours later<span class="es">(24 horas después)</span></span>
     </div>
     <div class="btns">
-      <button id="btnHalf" class="key">Jump 12 hours<span class="es">(Salta 12 horas)</span></button>
+      <button id="btnHalf" class="key">Spin 12 hours<span class="es">(Gira 12 horas)</span></button>
       <button id="btnReset">Back to 4:00 P.M.<span class="es">(Volver a las 4:00 p. m.)</span></button>
     </div>
   </div>
@@ -236,6 +239,8 @@
   }
 
   function render(){
+    // Earth spins counterclockwise (seen from above the North Pole): negative SVG rotation.
+    $("land").setAttribute("transform", "rotate(" + (-(elapsed / 24) * 360).toFixed(2) + " " + EC.x + " " + EC.y + ")");
     var a = angleDeg(elapsed) * Math.PI / 180;
     var px = EC.x + EC.r * Math.cos(a), py = EC.y + EC.r * Math.sin(a);
     $("pinDot").setAttribute("cx", px.toFixed(1)); $("pinDot").setAttribute("cy", py.toFixed(1));
@@ -257,9 +262,26 @@
     render();
   }
 
-  $("timeSlider").addEventListener("input", function(e){ setElapsed(parseFloat(e.target.value)); });
-  $("btnHalf").addEventListener("click", function(){ setElapsed(elapsed + 12); });
-  $("btnReset").addEventListener("click", function(){ setElapsed(0); });
+  var animId = null;
+  function stopAnim(){ if (animId){ cancelAnimationFrame(animId); animId = null; } }
+  // Smoothly spin the Earth from the current time to a target time (12 hours later, etc.).
+  function spinTo(target){
+    stopAnim();
+    target = Math.max(0, Math.min(24, target));
+    if (reduceMotion || target === elapsed){ setElapsed(target); return; }
+    var start = elapsed, dur = 1500, t0 = null;
+    function frame(ts){
+      if (!t0) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      var e = 0.5 - 0.5 * Math.cos(p * Math.PI);   // ease in and out
+      setElapsed(start + (target - start) * e);
+      if (p < 1) animId = requestAnimationFrame(frame); else animId = null;
+    }
+    animId = requestAnimationFrame(frame);
+  }
+  $("timeSlider").addEventListener("input", function(e){ stopAnim(); setElapsed(parseFloat(e.target.value)); });
+  $("btnHalf").addEventListener("click", function(){ spinTo(elapsed + 12); });
+  $("btnReset").addEventListener("click", function(){ stopAnim(); setElapsed(0); });
 
   /* quiz */
   var QUESTIONS = [
@@ -353,7 +375,7 @@
     if (opt.go){
       var act = document.createElement("div"); act.className = "act";
       var go = document.createElement("button"); setBi(go, opt.go.label, opt.go.labelEs);
-      go.addEventListener("click", function(){ setElapsed(opt.go.hours); $("lab").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" }); });
+      go.addEventListener("click", function(){ $("lab").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" }); spinTo(opt.go.hours); });
       act.appendChild(go); fb.appendChild(act);
     }
     updateScore();
