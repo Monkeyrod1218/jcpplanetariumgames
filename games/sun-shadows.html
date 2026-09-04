@@ -161,7 +161,7 @@
   <div class="sec">
     <div class="quizhead">
       <h2>Now answer<span class="es">(Ahora responde)</span></h2>
-      <div class="score"><div class="stars-row" id="starsRow">☆☆</div><span id="scoreText"></span></div>
+      <div class="score"><div class="stars-row" id="starsRow">☆☆☆</div><span id="scoreText"></span></div>
     </div>
     <div id="quiz"></div>
 
@@ -284,6 +284,24 @@
         { text: "The Moon is pushing the Sun.", es: "La Luna empuja al Sol.", ok: false,
           fb: "The Moon doesn't push the Sun. The Sun seems to move because Earth turns on its axis.",
           fbEs: "La Luna no empuja al Sol. El Sol parece moverse porque la Tierra gira sobre su eje." }
+      ]
+    },
+    {
+      text: "Why does the Sun appear to rise in the east and set in the west every single day?",
+      es: "¿Por qué parece que el Sol sale por el este y se oculta por el oeste todos los días?",
+      options: [
+        { text: "Because Earth rotates on its axis.", es: "Porque la Tierra gira sobre su eje.", ok: true,
+          fb: "That's it. You saw it above: the Sun crossed the sky and the shadow moved — all because Earth spins, not because the Sun really moves.",
+          fbEs: "Eso es. Lo viste arriba: el Sol cruzó el cielo y la sombra se movió, todo porque la Tierra gira, no porque el Sol se mueva de verdad." },
+        { text: "Because the Sun circles around Earth once a day.", es: "Porque el Sol gira alrededor de la Tierra una vez al día.", ok: false,
+          fb: "People believed that a long time ago, but the Sun stays in place and Earth turns. It only looks like the Sun moves across the sky.",
+          fbEs: "La gente creía eso hace mucho tiempo, pero el Sol se queda en su lugar y la Tierra gira. Solo parece que el Sol se mueve por el cielo." },
+        { text: "Because Earth goes around the Sun once a day.", es: "Porque la Tierra da la vuelta al Sol una vez al día.", ok: false,
+          fb: "Earth does orbit the Sun, but that takes about 365 days, not one. Sunrise and sunset come from the daily spin.",
+          fbEs: "La Tierra sí orbita el Sol, pero eso tarda unos 365 días, no uno. El amanecer y el atardecer vienen del giro diario." },
+        { text: "Because the Sun gets brighter and then dimmer.", es: "Porque el Sol se pone más brillante y luego más tenue.", ok: false,
+          fb: "The Sun's brightness stays about the same. What changes is which way your part of Earth is facing.",
+          fbEs: "El brillo del Sol se mantiene casi igual. Lo que cambia es hacia dónde está mirando tu parte de la Tierra." }
       ]
     }
   ];
