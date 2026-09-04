@@ -140,7 +140,7 @@
     <span class="es">(De una luna nueva a la siguiente hay unos 29.5 días. La luna llena está a la mitad (unos 15 días). Los cuartos están a la mitad entre una luna nueva y una luna llena.)</span>
   </div>
 
-  <div class="sec" id="quizsec" hidden>
+  <div class="sec" id="quizsec">
     <div class="quizhead">
       <h2>Now answer<span class="es">(Ahora responde)</span></h2>
       <div class="score"><div class="stars-row" id="starsRow">☆☆</div><span id="scoreText"></span></div>
@@ -303,11 +303,9 @@
       placedCount++;
       var ph = PHASES.filter(function(p){ return p.key === key; })[0];
       if (placedCount >= PHASES.length){
-        setBi($("hint"), "You placed them all! Now answer the two questions below.",
-          "¡Las colocaste todas! Ahora responde las dos preguntas de abajo.");
+        setBi($("hint"), "You placed them all! Answer the two questions below.",
+          "¡Las colocaste todas! Responde las dos preguntas de abajo.");
         $("hint").className = "hint ok";
-        $("quizsec").hidden = false;
-        $("quizsec").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
       } else {
         setBi($("hint"), "Great — the " + ph.en + " goes there! Keep going.",
           "¡Bien, la " + ph.es.toLowerCase() + " va ahí! Sigue así.");
