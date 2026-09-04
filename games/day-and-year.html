@@ -203,7 +203,7 @@
   function spinOnce(){
     if (busy) return;
     var start = rho;
-    animate(1800, function(p){ rho = start + p * 2 * Math.PI; draw(); }, function(){
+    animate(2570, function(p){ rho = start - p * 2 * Math.PI; draw(); }, function(){
       setBi($("result"), "You spun the Earth once. That is one day — 24 hours. The Sun stayed still; only the Earth turned.",
         "Giraste la Tierra una vez. Eso es un día: 24 horas. El Sol se quedó quieto; solo la Tierra giró.");
     });
@@ -211,7 +211,7 @@
   function orbitOnce(){
     if (busy) return;
     var startPhi = phi, startRho = rho;
-    animate(4200, function(p){ phi = startPhi + p * 2 * Math.PI; rho = startRho + p * 6 * 2 * Math.PI; draw(); }, function(){
+    animate(6000, function(p){ phi = startPhi - p * 2 * Math.PI; rho = startRho - p * 6 * 2 * Math.PI; draw(); }, function(){
       setBi($("result"), "Earth went all the way around the Sun once. That is one year — about 365 days. A trip around the Sun is much slower than a spin.",
         "La Tierra dio toda la vuelta al Sol una vez. Eso es un año: unos 365 días. Un viaje alrededor del Sol es mucho más lento que un giro.");
     });
